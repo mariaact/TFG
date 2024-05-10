@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Conpatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogo</title>
+    <link rel="stylesheet" href="/stylesheets/peliculasDetalles.css">
+    <link rel="stylesheet" href="/stylesheets/valoraciones.css">
+    <link rel="stylesheet" href="/stylesheets/botonUsuario.css">
+
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+
+</head>
+
+<body>
+
+    <header class="header" style="background:linear-gradient(rgba(255, 255, 225, 0), rgba(0, 0, 0, 1)), url('<%= imageUrl %>') center center no-repeat; background-size: cover;">
+        <div class="menu container"> 
+            <a href="#" class="logo"> MejoresSeries</a>
+            <input type="checkbox" id="menu" />
+            <label class="label" for="menu">
+                <img src="/images/menu.png" class="menu-icono" alt="menu">
+            </label>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="/principal?perfil=<%- perfil %>&usuario=<%- user %>"> Inicio</a></li>
+                    <li><a href="#"> Nosotros</a></li>
+                    <li><a href="/catalogo"> Peliculas</a></li>
+                    <li><a href="/lista"> Lista</a></li>
+                </ul>
+            </nav>
+
+           
+        </div>
+        <%- include('botonUsuario') %>
+
+        <div class="cuerpo">
+            <div class="titulo">
+                <h2> <%- titulo %> </h2>
+                <hr>
+            </div>
+            <div class="infoPelicula">
+                <div class="fechaPelicula">
+                    <p><strong> <%- fechaLanzamiento %> </strong></p>
+                </div>
+                <div class="duracionPelicula">
+                    <p><strong> <%- duracion %> h </strong></p>
+                </div>
+                <div class="megustaPelicula">
+                    <button class="heart-btn" onclick="toggleHeart(this, '<%- pelicula %>', '<%- user %>', '<%- perfil %>')">
+                        <svg class="heart-icon <%= comprobarPeliculaLista ? 'active' : '' %>" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="valoracion" >
+                    <i class="fas fa-thumbs-up" id="manoArriba" style="width: 50px;height: 50px;">          </i>
+                </div>
+                
+                
+            </div>
+
+
+
+            <div class="contenedor">
+                <div class="div1">
+                    <p><%- review %></p>
+                </div>
+                <div class="div2">
+                    Reparto: <%- reparto %>...
+                    <br>
+                    <br>
+                    Género: <%- generos %>.
+                    <br>
+                </div>
+            </div>
+        </div>
+
+    </header>
+
+    <div class="contenedorResenas">
+        <div class="contenedorResenas1">
+            <h1>Valoración Pelicula</h1>
+            <div class="rating-container">
+                <div class="rating-item hidden" id="smile"><i class="far fa-smile"></i></div>
+                <div class="rating-item hidden" id="meh"><i class="far fa-meh"></i></div>
+                <div class="rating-item hidden" id="frown"><i class="far fa-frown"></i></div>
+            </div>
+            <p>¡Haz clic!</p>
+            <a class="enlaceResena" href="#">Escribir resena</a>
+        </div>
+    </div>
+
+
+    <section class="movies container">
+
+        <h2> Similares </h2>
+        <hr>
+
+        <div class="box-container-1">
+            <div class="box-1">
+                <div class="content">
+                    <img src="https://image.tmdb.org/t/p/original/6GkKzdNosVAL7UGgwTtCHSxLQ67.jpg" alt="">
+                    <h3>Pelicula HD</h3>
+                    <p>Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto.</p>
+                </div>
+            </div>
+            <div class="box-1">
+                <div class="content">
+                    <img src="https://image.tmdb.org/t/p/original/1VXMrUioKfPAPSsezHKexx77Dbz.jpg" alt="">
+                    <h3>Pelicula HD</h3>
+                    <p>Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto.</p>
+                </div>
+            </div>
+            <div class="box-1">
+                <div class="content">
+                    <img src="https://image.tmdb.org/t/p/original/re6SSQS1HgBGG9AMiNuPGISOfMx.jpg" alt="">
+                    <h3>Pelicula HD</h3>
+                    <p>Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. </p>
+                </div>
+            </div>
+            <div class="box-1">
+                <div class="content">
+                    <img src="https://image.tmdb.org/t/p/original/hIEKzq0klqtz1H3S7QxzH4mMbvT.jpg" alt="">
+                    <h3>Pelicula HD</h3>
+                    <p>Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. </p>
+                </div>
+            </div>
+            <div class="box-1">
+                <div class="content">
+                    <img src="https://image.tmdb.org/t/p/original/3TUYy0XvhPQBhrXJwRIaOoYFOBO.jpg" alt="">
+                    <h3>Pelicula HD</h3>
+                    <p>Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="load-more" id="load-more-1"> Cargar más</div>
+
+
+<!--
+        <footer class="footer container">
+            <h3>MejoresSeries</h3>
+            <ul>
+                <li><a href="/principal">Inicio</a></li>
+                <li><a href="#">Nosotros</a></li>
+                <li><a href="/peliculas">Peliculas</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </footer> -->
+
+        <%- include('footer') %>
+
+        <script src="/javascripts/nav.js"></script>
+
+        <script src="/javascripts/corazonLista.js"></script>
+        <script src="/javascripts/divValoraciones.js"></script>
+
+
+</body>
+
+</html>
