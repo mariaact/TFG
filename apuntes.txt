@@ -1,0 +1,1 @@
+1.	Vele Zhingri, C. A. (2016). Análisis de rendimiento entre la base de datos relacional: MySQL y una base de datos no relacional: MongoDB (Bachelor's thesis, Universidad del Azuay).

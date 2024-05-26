@@ -1,31 +1,17 @@
 var express = require('express');
 var router = express.Router();
-const { request } = require('express');
 var database = require('../consultasDB');
-const { emit } = require('process');
 const { error } = require('console');
 
+
 /* GET home page. */
-router.get('/', function (req, res, next) {
-  mensaje = '';
-  res.render('logIn', { title: 'Catalago', mensaje });
+router.get('/modificarUsuario', function (req, res, next) {
+  let errores = '';
+  res.render('modificarUsuario', {  errores });
 });
 
-router.post('/logIn', async function (req, res, next) {
-  let usuario = req.body.username;
-  let pwd = req.body.password;
-  req.session.user = usuario;
 
-  const usuarioEncontrado = await database.comprobarUsuario(usuario, pwd);
-  if(typeof usuarioEncontrado == 'object'){
-    res.redirect("/paginaUsuarios");
-  }else{
-    mensaje = usuarioEncontrado;
-    res.render('logIn',  { title: 'Catalago', mensaje })
-  }
-});
-
-router.post('/logInContra', async function (req, res, next) {
+router.post('/modificarUsuario', async function (req, res, next) {
   let usuario = req.body.emailContrasena;
   let contrasenna = req.body.nuevaContrasena;
   let contrasenna1 = req.body.nuevaContrasena1;
@@ -46,11 +32,11 @@ router.post('/logInContra', async function (req, res, next) {
       errores += usuarioEncontrado;
     }
   }else{
-    errores += 'Las contraseñas no son las mismas'
+    errores += 'Las contraseñas no son las mismas</br>'
   }
 
   console.log('erroresssss   ' + errores)
-  res.render('logIn',  { title: 'Catalago', errores })
+  res.render('modificarUsuario',  {  errores })
 
  
 });

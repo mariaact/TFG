@@ -17,7 +17,7 @@ body {
 }
 
 .container {
-    max-width: 140vh;
+    max-width: 150vh;
     margin: 0 auto;
 }
 
@@ -276,16 +276,22 @@ hr {
 .content img {
     width: 100%;
     margin-bottom: 15px;
+    height: 43vh;
 }
 
 .content h3 {
     font-size: 20px;
     margin-bottom: 10px;
+    text-align: center;
+    height: 13vh;
+    font-size: 3.5vh;
+    padding-top: 1vh;
 }
 
 .content {
     color: #FFFFFF;
-    font-size: 1.5vh;
+    font-size: 2.5vh;
+    width: 30vh;
 }
 
 .fas {
@@ -318,7 +324,7 @@ hr {
 .divPantallaFiltro {
     position: fixed;
     top: 30vh;
-    left: 85%;
+    left: 90%;
     width: 50vh;
     height: 70%;
     background-color: black;
@@ -382,7 +388,7 @@ hr {
 
 .divListaVacia {
     width: 208vh;
-    height: 65vh;
+    height: 53vh;
 }
 
 

@@ -7,14 +7,15 @@ var database = require('../consultasDB');
 
 router.get('/catalogo', async function (req, res, next) {
 
-  console.log('Valores de las variables de sesion son:  perfil:  ' 
-  + req.session.perfiles + '  usuario: '+ req.session.usuario)
+  console.log('Valores de las variables de sesion son:  perfil:  '
+    + req.session.perfiles + '  usuario: ' + req.session.usuario)
 
   const nombrePerfiles = await database.obtenerPerfilesDeUnUsuario(req.session.usuario);
   const posicionPerfil = nombrePerfiles.indexOf(req.session.perfiles);
 
 
   const peliculasGeneros = await database.peliculasMasVistas();
+  const peliculasMasVistasInfantiles = await database.ObtenerPeliculasMasPopularesInfantiles();
   const generos = await database.obtenerTodosLosGeneros();
 
   let html = '';
@@ -32,23 +33,41 @@ router.get('/catalogo', async function (req, res, next) {
   }
 
   html += '<h2> Películas </h2>  <hr> ';
-  for (let i = 0; i <= 3; i++) {
 
-    html += '<section class="movies container"> <div class="box-container-' + numero + '">';
+  if (perfil == 'Kids') {
+    for (let i = 0; i <= 3; i++) {
 
-    for (let i = cont; i <= cont + 3; i++) {
-      //console.log('numero de pelicula   ' + i)
-      html += '<div class="box-' + numero + '"><div class="content"><img class="imagenPelicula" src="https://image.tmdb.org/t/p/original' + peliculasGeneros[i].poster_path + ' " alt=""> ' +
-        '<h3>' + peliculasGeneros[i].title + '</h3> <a href="/peliculaDetallada?valor=' + peliculasGeneros[i].title + '"> ver mas </a> </div>   </div>  '
-      contador = i;
+      html += '<section class="movies container"> <div class="box-container-' + numero + '">';
+
+      for (let i = cont; i <= cont + 3; i++) {
+        //console.log('numero de pelicula   ' + i)
+        html += '<div class="box-' + numero + '"><div class="content"><img class="imagenPelicula" src="https://image.tmdb.org/t/p/original' + peliculasMasVistasInfantiles[i].poster_path + ' " alt=""> ' +
+          '<h3>' + peliculasMasVistasInfantiles[i].title + '</h3> <a href="/peliculaDetallada?valor=' + peliculasMasVistasInfantiles[i].title + '"> ver mas </a> </div>   </div>  '
+        contador = i;
+      }
+      html += '</div>  </section>';
+      cont = contador + 1;
+      numero++;
     }
-    html += '</div>  </section>';
-    cont = contador + 1;
-    numero++;
-  }
-  console.log('el cont de las peliculae¡s tjee ' + cont)
+  } else {
+    for (let i = 0; i <= 3; i++) {
 
-  res.render('catalogo', { html, listaGenero, usuario, perfil, posicionPerfil});
+      html += '<section class="movies container"> <div class="box-container-' + numero + '">';
+
+      for (let i = cont; i <= cont + 3; i++) {
+        //console.log('numero de pelicula   ' + i)
+        html += '<div class="box-' + numero + '"><div class="content"><img class="imagenPelicula" src="https://image.tmdb.org/t/p/original' + peliculasGeneros[i].poster_path + ' " alt=""> ' +
+          '<h3>' + peliculasGeneros[i].title + '</h3> <a href="/peliculaDetallada?valor=' + peliculasGeneros[i].title + '"> ver mas </a> </div>   </div>  '
+        contador = i;
+      }
+      html += '</div>  </section>';
+      cont = contador + 1;
+      numero++;
+    }
+
+  }
+
+  res.render('catalogo', { html, listaGenero, usuario, perfil, posicionPerfil });
 
 });
 
@@ -63,6 +82,8 @@ router.get('/cargarMasPeliculas', async function (req, res, next) {
 
 
   const peliculasGeneros = await database.peliculasMasVistas();
+  const peliculasMasVistasInfantiles = await database.ObtenerPeliculasMasPopularesInfantiles();
+
   const generos = await database.obtenerTodosLosGeneros();
 
   let html = '';
@@ -78,22 +99,41 @@ router.get('/cargarMasPeliculas', async function (req, res, next) {
   }
 
   html += '<h2> Películas </h2>  <hr> ';
-  for (let i = 0; i <= 3; i++) {
 
-    html += '<section class="movies container"> <div class="box-container-' + numero + '">';
+  if (perfil == 'Kids') {
+    for (let i = 0; i <= 3; i++) {
 
-    for (let i = cont; i <= cont + 3; i++) {
-     // console.log('numero de pelicula   ' + i)
-      html += '<div class="box-' + numero + '"><div class="content"><img class="imagenPelicula" src="https://image.tmdb.org/t/p/original' + peliculasGeneros[i].poster_path + ' " alt=""> ' +
-        '<h3>' + peliculasGeneros[i].title + '</h3> <a href="/peliculaDetallada?valor=' + peliculasGeneros[i].title + '"> ver mas </a> </div>   </div>  '
-      contador = i;
+      html += '<section class="movies container"> <div class="box-container-' + numero + '">';
+
+      for (let i = cont; i <= cont + 3; i++) {
+        // console.log('numero de pelicula   ' + i)
+        html += '<div class="box-' + numero + '"><div class="content"><img class="imagenPelicula" src="https://image.tmdb.org/t/p/original' + peliculasMasVistasInfantiles[i].poster_path + ' " alt=""> ' +
+          '<h3>' + peliculasMasVistasInfantiles[i].title + '</h3> <a href="/peliculaDetallada?valor=' + peliculasMasVistasInfantiles[i].title + '"> ver mas </a> </div>   </div>  '
+        contador = i;
+      }
+      html += '</div>  </section>';
+      cont = contador + 1;
+      numero++;
     }
-    html += '</div>  </section>';
-    cont = contador + 1;
-    numero++;
+  } else {
+    for (let i = 0; i <= 3; i++) {
+
+      html += '<section class="movies container"> <div class="box-container-' + numero + '">';
+
+      for (let i = cont; i <= cont + 3; i++) {
+        // console.log('numero de pelicula   ' + i)
+        html += '<div class="box-' + numero + '"><div class="content"><img class="imagenPelicula" src="https://image.tmdb.org/t/p/original' + peliculasGeneros[i].poster_path + ' " alt=""> ' +
+          '<h3>' + peliculasGeneros[i].title + '</h3> <a href="/peliculaDetallada?valor=' + peliculasGeneros[i].title + '"> ver mas </a> </div>   </div>  '
+        contador = i;
+      }
+      html += '</div>  </section>';
+      cont = contador + 1;
+      numero++;
+    }
   }
 
-  res.render('peliculas', { html, listaGenero, usuario, perfil, posicionPerfil});
+
+  res.render('catalogo', { html, listaGenero, usuario, perfil, posicionPerfil });
 
 });
 
@@ -119,6 +159,8 @@ router.post('/guardar-filtro', async function (req, res) {
   const checkboxesSeleccionados = req.body.opcion;
 
   const peliculasGeneros = await database.obtenerInfoPeliculasGenero(checkboxesSeleccionados);
+  const peliculasInfantilesGeneros = await database.ObtenerPeliculasInfantilesSegunElGenero(checkboxesSeleccionados);
+
 
   let html = '';
   let cont = 2;
@@ -127,26 +169,43 @@ router.post('/guardar-filtro', async function (req, res) {
 
   html += '<h2>' + checkboxesSeleccionados + '</h2>  <hr>';
 
+  if (perfil == 'Kids') {
+    for (let i = 0; i <= 3; i++) {
 
-  for (let i = 0; i <= 3; i++) {
+      html += '<section class="movies container"> <div class="box-container-' + numero + '">';
 
-    html += '<section class="movies container"> <div class="box-container-' + numero + '">';
-
-    for (let i = cont; i <= cont + 3; i++) {
-      //console.log('numero de pelicula   ' + i)
-      html += '<div class="box-' + numero + '"><div class="content"> <img class="imagenPelicula" src="https://image.tmdb.org/t/p/original' + peliculasGeneros[i].poster_path + ' " alt=""> ' +
-        '<h3>' + peliculasGeneros[i].title + '</h3> <a href="/peliculaDetallada?valor=' + peliculasGeneros[i].title + '"> ver mas </a> </div>   </div>   '
-      contador = i;
+      for (let i = cont; i <= cont + 3; i++) {
+        //console.log('numero de pelicula   ' + i)
+        html += '<div class="box-' + numero + '"><div class="content"> <img class="imagenPelicula" src="https://image.tmdb.org/t/p/original' + peliculasInfantilesGeneros[i].poster_path + ' " alt=""> ' +
+          '<h3>' + peliculasInfantilesGeneros[i].title + '</h3> <a href="/peliculaDetallada?valor=' + peliculasInfantilesGeneros[i].title + '"> ver mas </a> </div>   </div>   '
+        contador = i;
 
 
+      }
+      html += '</div>  </section>';
+      cont = contador + 1;
+      numero++;
     }
-    html += '</div>  </section>';
-    cont = contador + 1;
-    numero++;
+  } else {
+    for (let i = 0; i <= 3; i++) {
+
+      html += '<section class="movies container"> <div class="box-container-' + numero + '">';
+
+      for (let i = cont; i <= cont + 3; i++) {
+        //console.log('numero de pelicula   ' + i)
+        html += '<div class="box-' + numero + '"><div class="content"> <img class="imagenPelicula" src="https://image.tmdb.org/t/p/original' + peliculasGeneros[i].poster_path + ' " alt=""> ' +
+          '<h3>' + peliculasGeneros[i].title + '</h3> <a href="/peliculaDetallada?valor=' + peliculasGeneros[i].title + '"> ver mas </a> </div>   </div>   '
+        contador = i;
+
+
+      }
+      html += '</div>  </section>';
+      cont = contador + 1;
+      numero++;
+    }
   }
 
-  res.render('peliculas', { html, listaGenero, usuario, perfil, posicionPerfil });
-
+  res.render('catalogo', { html, listaGenero, usuario, perfil, posicionPerfil });
 });
 
 

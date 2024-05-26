@@ -1,32 +1,27 @@
 var express = require('express');
 var router = express.Router();
 var database = require('../consultasDB');
+var algoritmoNaiveBayes = require('../algoritmoNaiveBayes');
+
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { MongoClient } = require('mongodb');
 const { use } = require('./catalogo');
+
 
 const dbURI = 'mongodb://127.0.0.1:27017/Series';
 const dbName = 'Series'
 const client = new MongoClient(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = client.db(dbName);
 
-/* GET home page. */
 router.get('/peliculaDetallada', async function (req, res, next) {
 
-  console.log('Valores de las variables de sesion son:  perfil:  ' 
-  + req.session.perfiles + '  usuario: '+ req.session.usuario)
   const nombrePelicula = req.query.valor;
   const perfil = req.session.perfiles
   const user = req.session.usuario
   const nombrePerfiles = await database.obtenerPerfilesDeUnUsuario(user);
   const posicionPerfil = nombrePerfiles.indexOf(perfil);
-
-  console.log('valores de la sesion   ------  ' + perfil + user)
-
-  
   const peliculaDetalles = await database.peliculaDetalles(nombrePelicula);
-
   const titulo = peliculaDetalles.title;
   const fechaLanzamiento = new Date(peliculaDetalles.release_date).getFullYear();
   const review = peliculaDetalles.overview;
@@ -38,19 +33,23 @@ router.get('/peliculaDetallada', async function (req, res, next) {
   const pelicula = titulo;
   const comprobarPeliculaLista = await database.comprobarPeliculaLista(user, perfil, titulo);
 
-  res.render('peliculaDetallada', { titulo, fechaLanzamiento, duracion, review, imageUrl, reparto, generos, pelicula, user, comprobarPeliculaLista, perfil, posicionPerfil });
+  const recomendaciones = await algoritmoNaiveBayes.resultado(nombrePelicula);
+  let html = '';
+  console.log('Perdil dentro dde peli detalles    '+ perfil)
+
+  for (var i = 1; i <= 5; i++) {
+    html += '<div class="box-1"> <div class="content"> <img src="https://image.tmdb.org/t/p/original' + recomendaciones[i].imagen + '" alt=""> <h3>' + recomendaciones[i].titulo + '</h3><a href="/peliculaDetallada?valor=' + recomendaciones[i].titulo + '"> ver mas </a> </div>   </div>  '
+  }
+  const cargarMas = '<div class="load-more"  class="btn-1" id="cargarPeliculas"> <a href="/cargarMasPeliculasSimilares?valor=' + nombrePelicula + '"> ver mas </a> </div>';
+
+  res.render('peliculaDetallada', { titulo, fechaLanzamiento, duracion, review, imageUrl, reparto, generos, pelicula, user, comprobarPeliculaLista, perfil, posicionPerfil, html, cargarMas });
 });
 
-router.use(bodyParser.json());
 
 router.post('/enviar-datos', async (req, res) => {
   const nombreUsuario = req.body.Usuario;
   const pelicula = req.body.Pelicula;
   const perfil = req.body.Perfil;
-  console.log('valor del corazon en la peli:   ' + req.body.Corazon)
-  console.log('valores en la peli:   ' + nombreUsuario + pelicula + perfil)
-
-
   const peliculaDetalles = await database.peliculaDetalles(req.body.Pelicula);
   const fechaLanzamiento = new Date(peliculaDetalles.release_date).getFullYear();
   const review = peliculaDetalles.overview;
@@ -59,18 +58,9 @@ router.post('/enviar-datos', async (req, res) => {
   const reparto = peliculaDetalles.reparto.slice(0, 10);;
   const imageUrl = 'https://image.tmdb.org/t/p/original' + foto;
   const generos = await database.obtenerNombreGenero(peliculaDetalles.genre_ids);
-  /*const nombreUsuario = req.body.Usuario;
-  const pelicula = req.body.Pelicula;
-  const perfil = req.body.Perfil;*/
-  console.log('comprobacion ' + nombreUsuario + perfil + pelicula)
   const comprobarPeliculaLista = await database.comprobarPeliculaLista(nombreUsuario, perfil, pelicula);
-  console.log(comprobarPeliculaLista)
+  
   try {
-
-
-    console.log('valor del corazon en la peli:   ' + req.body.Corazon)
-
-    //eliminar la pelicula
     if (req.body.Corazon === false) {
       console.log('estoy es enviar-datooosss   if')
       const usuario = await database.comprobarExistenciausuario(nombreUsuario);
@@ -113,6 +103,98 @@ router.post('/enviar-datos', async (req, res) => {
   }
   //res.render('peliculaDetalles', { pelicula, fechaLanzamiento, duracion, review, imageUrl, reparto, generos, pelicula, user, comprobarPeliculaLista, perfil });
 
+});
+
+let numero = 5;
+let contador = 5;
+router.get('/cargarMasPeliculasSimilares', async function (req, res, next) {
+
+  const usuario = req.session.usuario;
+  const perfil = req.session.perfiles;
+  const nombrePelicula = req.query.valor;
+
+  const user = req.session.usuario
+  const peliculaDetalles = await database.peliculaDetalles(nombrePelicula);
+  const titulo = peliculaDetalles.title;
+  const fechaLanzamiento = new Date(peliculaDetalles.release_date).getFullYear();
+  const review = peliculaDetalles.overview;
+  const foto = peliculaDetalles.backdrop_path;
+  const duracion = peliculaDetalles.duracion;
+  const reparto = peliculaDetalles.reparto.slice(0, 10);;
+  const imageUrl = 'https://image.tmdb.org/t/p/original' + foto;
+  const generos = await database.obtenerNombreGenero(peliculaDetalles.genre_ids);
+  const pelicula = titulo;
+  const comprobarPeliculaLista = await database.comprobarPeliculaLista(user, perfil, titulo);
+
+  const nombrePerfiles = await database.obtenerPerfilesDeUnUsuario(req.session.usuario);
+  const posicionPerfil = nombrePerfiles.indexOf(req.session.perfiles);
+  const recomendaciones = await algoritmoNaiveBayes.resultado(nombrePelicula);
+
+  let html = '';
+  let listaGenero = '';
+
+
+  if (perfil == 'Kids') {
+    numero = contador + 1;
+    contador = contador + 5;
+    if (contador <= 45) {
+      for (var i = numero; i <= contador; i++) {
+        html += '<div class="box-1"> <div class="content"> <img src="https://image.tmdb.org/t/p/original' + recomendaciones[i].imagen + '" alt=""> <h3>' + recomendaciones[i].titulo + '</h3> <a href="/peliculaDetallada?valor=' + recomendaciones[i].titulo + '"> ver mas </a> </div> </div>'
+      }
+    }
+  } else {
+    numero = contador + 1;
+    contador = contador + 5;
+    if (contador <= 45) {
+      for (var i = numero; i <= contador; i++) {
+          html += '<div class="box-1"> <div class="content"> <img src="https://image.tmdb.org/t/p/original' + recomendaciones[i].imagen + '" alt=""> <h3>' + recomendaciones[i].titulo + '</h3> <a href="/peliculaDetallada?valor=' + recomendaciones[i].titulo + '"> ver mas </a> </div> </div>'
+      }
+    }
+  }
+  let cargarMas = '';
+
+  if (contador < 45) {
+    cargarMas = '<div class="load-more"  class="btn-1" id="cargarPeliculas"> <a href="/cargarMasPeliculasSimilares?valor=' + nombrePelicula + '"> ver mas </a> </div>';
+  } else {
+    cargarMas = '<div class="load-more"  class="btn-1" id="cargarPeliculas" style="display:none"> <a href="/cargarMasPeliculasSimilares?valor=' + nombrePelicula + '"> ver mas </a> </div>';
+  }
+
+  res.render('peliculaDetallada', { nombrePelicula, fechaLanzamiento, duracion, review, imageUrl, reparto, generos, pelicula, user, comprobarPeliculaLista, perfil, posicionPerfil, html, cargarMas });
+
+});
+
+router.get('/guardarValoraciones', async function (req, res, next) {
+
+  const usuario = req.session.usuario;
+  const perfil = req.session.perfiles;
+  const nombrePelicula = req.query.titulo;
+  const valoracion  = req.query.valoracion;
+
+  const user = req.session.usuario
+  const peliculaDetalles = await database.peliculaDetalles(nombrePelicula);
+  const titulo = peliculaDetalles.title;
+  const fechaLanzamiento = new Date(peliculaDetalles.release_date).getFullYear();
+  const review = peliculaDetalles.overview;
+  const foto = peliculaDetalles.backdrop_path;
+  const duracion = peliculaDetalles.duracion;
+  const reparto = peliculaDetalles.reparto.slice(0, 10);;
+  const imageUrl = 'https://image.tmdb.org/t/p/original' + foto;
+  const generos = await database.obtenerNombreGenero(peliculaDetalles.genre_ids);
+  const pelicula = titulo;
+  const comprobarPeliculaLista = await database.comprobarPeliculaLista(user, perfil, titulo);
+
+  const nombrePerfiles = await database.obtenerPerfilesDeUnUsuario(req.session.usuario);
+  const posicionPerfil = nombrePerfiles.indexOf(req.session.perfiles);
+
+  console.log('Valoracion ----   ' + valoracion + '  -----*  '+ nombrePelicula);
+  
+
+  //pelicula, valoracion, comentario, usuario, perfil
+  await database.añadirNuevaValoracion(nombrePelicula, valoracion, usuario, perfil);
+
+  //res.render('peliculaDetallada', { nombrePelicula, fechaLanzamiento, duracion, review, imageUrl, reparto, generos, pelicula, user, comprobarPeliculaLista, perfil, posicionPerfil, html, cargarMas });
+
+  res.redirect('/peliculaDetallada?valor=' + nombrePelicula)
 });
 
 module.exports = router;

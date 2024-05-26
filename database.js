@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { MongoClient } = require('mongodb');
+const { ObtenerTituloGeneroDescripcionDeTodasPeliculas } = require('./consultasDB');
 
 
 const dbURI = 'mongodb://127.0.0.1:27017/Series';
@@ -45,7 +46,7 @@ async function guardarGenerosBaseDeDatos() {
     await verificarYEliminarColeccion('Generos');
 
     const url = `https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=es`
-    const response =  await fetch(url);
+    const response = await fetch(url);
 
     if (!response.ok) {
       throw new Error('Error al obtener datos de la API');
@@ -53,9 +54,9 @@ async function guardarGenerosBaseDeDatos() {
 
     const data = await response.json();
     const generosInfo = data.genres;
-        
+
     const resultado = await Genero.insertMany(generosInfo, { ordered: false });
-     
+
     console.log('Datos añadidos correctamente a la colección');
     mongoose.connection.close();
 
@@ -154,6 +155,69 @@ async function guardarPeliculasBaseDeDatos() {
   }
 }
 
+const movieId = '39514';
+const releaseDatesUrl = `https://api.themoviedb.org/3/movie/${movieId}/release_dates?api_key=${apiKey}`;
+
+async function getMovieCertifications() {
+  try {
+    let cont = 0
+    const peliculas = await obtenerTodasLasPeliculas();
+    console.log(`Número de películas: ${peliculas.length}`);
+
+    const countryCodeForSpain = 'ES'; // Código ISO-3166-1 para España
+    await client.connect();
+    const collection = db.collection('peliculas');
+
+    for (let pelicula of peliculas) {
+      cont ++;
+      //console.log(`Obteniendo detalles para la película con ID: ${pelicula.id}`);
+
+      const response = await fetch(`https://api.themoviedb.org/3/movie/${pelicula.id}/release_dates?api_key=${apiKey}`);
+      const releaseDatesData = await response.json();
+
+      // Buscar la certificación para España
+      let certificationForSpain = null;
+      if (releaseDatesData.results) {
+        const countryReleaseDates = releaseDatesData.results.find(countryInfo => countryInfo.iso_3166_1 === countryCodeForSpain);
+        if (countryReleaseDates) {
+          const releaseDates = countryReleaseDates.release_dates;
+          if (releaseDates.length > 0) {
+            certificationForSpain = releaseDates[0].certification;
+          }
+        }
+      }
+      
+
+      if (certificationForSpain) {
+        console.log(`Certificación para la película con ID ${pelicula.id}: ${certificationForSpain}`);
+
+        await collection.updateOne(
+          { id: pelicula.id },
+          { $set: { certificacion: certificationForSpain } }
+        );
+
+        console.log(`Información de la película ${pelicula.id} actualizada.`);
+        console.log(cont)
+      } else {
+        console.log(`No se encontró certificación para la película con ID ${pelicula.id}.`);
+      }
+    }
+  } catch (error) {
+    console.error('Error al obtener las certificaciones de las películas:', error);
+  } finally {
+    await client.close();
+  }
+}
+
+
+
+
+// Llamar a la función para obtener las fechas de lanzamiento y certificaciones de la película
+getMovieCertifications();
+
+
+
+
 
 const axios = require('axios');
 
@@ -167,7 +231,7 @@ async function obtenerInfoPelicula(movieId) {
     // Extraer los datos relevantes
     const reparto = data.credits.cast.map(actor => actor.name);
     const duracion = data.runtime;
-    
+
     return { reparto, duracion };
   } catch (error) {
     console.error(`Error al obtener información de la película ${movieId} desde TMDb:`, error);
@@ -206,17 +270,24 @@ async function actualizarInfoPeliculas() {
   }
 }
 
+async function resultadoTituloGeneroDescripcionDeTodasPeliculas() {
+  try {
+    await client.connect();
+    const collectionRecomendaciones = db.collection('recomendaciones');
 
 
+    const result = await ObtenerTituloGeneroDescripcionDeTodasPeliculas();
+    console.log(result)
+    await collectionRecomendaciones.deleteMany({});
 
+    await collectionRecomendaciones.insertMany(result);
+  } catch (error) {
+    console.error('Error al actualizar la información de las recomendaciones en MongoDB:', error);
+  } finally {
+    await client.close();
+  }
 
-
-
-
-
-
-
-
+}
 
 
 
@@ -224,51 +295,14 @@ async function actualizarInfoPeliculas() {
 
 async function ejecutarMetodosIndependientes() {
   console.log('Iniciando Método 1');
-  const guardarPeliculasPromise = actualizarInfoPeliculas(); // Ejecutar guardarPeliculasBaseDeDatos sin esperar
+  const guardarPeliculasPromise = resultadoTituloGeneroDescripcionDeTodasPeliculas(); // Ejecutar guardarPeliculasBaseDeDatos sin esperar
   await guardarPeliculasPromise; // Esperar a que se resuelva la promesa de guardarPeliculasBaseDeDatos
   console.log('Iniciando Método 1');
- /* const guardarPeliculasPromise1 = guardarGenerosBaseDeDatos(); // Ejecutar guardarPeliculasBaseDeDatos sin esperar
-  await guardarPeliculasPromise1; // Esperar a que se resuelva la promesa de guardarPeliculasBaseDeDatos
-  console.log('TERMINADA LA CARGA')*/
+  /* const guardarPeliculasPromise1 = guardarGenerosBaseDeDatos(); // Ejecutar guardarPeliculasBaseDeDatos sin esperar
+   await guardarPeliculasPromise1; // Esperar a que se resuelva la promesa de guardarPeliculasBaseDeDatos
+   console.log('TERMINADA LA CARGA')*/
 }
 
-ejecutarMetodosIndependientes();
-
-
-/*
-function informacionGeneros() {
-  const url = `https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=es`
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      return data.genres
-    })
-    .catch(error => {
-      console.error('Error al obtener la información de los generos:', error);
-    });
-}
-
-
-/*function informacionPeliculas() {
-  const url = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=es`;
-
-  // Retornar la promesa devuelta por fetch
-  return fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      // Información sobre las películas descubiertas
-      const peliculas = data.results;
-      return peliculas;
-    })
-    .catch(error => {
-      console.error('Error al obtener la información de las películas:', error);
-      throw error; // Rechazar la promesa con el error
-    });
-}*/
-
-
-
-//module.exports = { obtenerTodasLasPeliculas, obtenerInfoPeliculasGenero };
-
+//ejecutarMetodosIndependientes();
 
 

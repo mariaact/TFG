@@ -197,13 +197,29 @@ hr {
 }
 
 .content img {
-    width: 100%;
-    margin-bottom: 15px;
+    width: 30vh;
+    height: 43vh;
+    display: block;
+    margin: 0 auto;
 }
 
 .content h3 {
     font-size: 20px;
-    margin-bottom: 10px;
+    text-align: center;
+    height: 10vh;
+    font-size: 3.5vh;
+    padding-top: 1vh;
+}
+
+.content img {
+    width: 30vh;
+    height: 43vh;
+    display: block;
+    margin: 0 auto;
+}
+
+a {
+    float: right;
 }
 
 .content {

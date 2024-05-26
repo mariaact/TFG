@@ -30,16 +30,23 @@ function pedirNombre() {
 
 function enviarPerfiles(nombre) {
     console.log('esgdsgfdgshd------')
-    fetch('/paginaUsuariosAdd?nombre=' + encodeURIComponent(nombre))
+    console.log(encodeURIComponent(nombre))
+    console.log(nombre)
+    console.log('/paginaUsuariosAdd?nombre=' + encodeURIComponent(nombre))
+    /*-fetch('/paginaUsuariosAdd?nombre=' + encodeURIComponent(nombre))
         .then(response => {
+            console.log(response)
             if (!response.ok) {
                 throw new Error('Ocurrió un error al enviar el nombre.');
             }
              alert('¡Nombre enviado con éxito!');
+             window.location.href = '/paginaUsuariosAdd?nombre=' + encodeURIComponent(nombre);
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Ocurrió un error al enviar el nombre.');
+            alert('Ocurrió un error al enviar el nombrse.');
         });
+*/
+window.location.href = '/paginaUsuariosAdd?nombre=' + encodeURIComponent(nombre);
 
 }

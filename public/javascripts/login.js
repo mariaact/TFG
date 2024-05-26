@@ -100,11 +100,11 @@ document.addEventListener('DOMContentLoaded', function () {
   var formulario3 = document.getElementById("cambiarContrasena");
   //var enlace = document.getElementById("enlaceCuenta");
   //var enlace1 = document.getElementById("enlaceCuentaExistente");
-  var cambiarContrasena = document.getElementById("preguntaContrasena");
+  //var cambiarContrasena = document.getElementById("preguntaContrasena");
   var volverInicioSesion = document.getElementById("enlaceCuentaExistente2");
 
 
-
+/*
   //----------de iniciar sesion a cambair contrasena -------------------
   cambiarContrasena.addEventListener('click', function (event) {
     event.preventDefault();
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
     formulario1.style.display = "block";
     formulario3.style.display = "none";
   });
-
+*/
 
 
 });

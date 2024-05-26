@@ -43,9 +43,10 @@ router.get('/lista', async function (req, res, next) {
         html = '<div class="divListaVacia"><h1 class="mensajeListaVacia">No tiene ninguna pelicula en su lista</h1></div>'
     }else{
 
+        const pelis = Object.values(listaPeliculas);
+
         if (listaPeliculas.length <= 3) {
             console.log('fgjfklgdjnj')
-            const pelis = Object.values(listaPeliculas);
             html += '<section class="movies container"> <div class="box-container-' + numero + '">';
     
             for (let i = cont; i < listaPeliculas.length; i++) {
@@ -76,8 +77,6 @@ router.get('/lista', async function (req, res, next) {
                 numero++;
             }
             cont = contador + 1;
-    
-    
             console.log(html)
         }
 

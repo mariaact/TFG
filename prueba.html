@@ -43,68 +43,53 @@
                     </ul>
                 </div>
             </div>
-            <%- include('botonUsuario') %>
-                <div class="header-content container">
-                    <div class="header-1">
-                        <img src="" alt="">
-                        <a href="#" class="btn-2">Ver ahora</a>
-                    </div>
-                    <div class="header-2">
-                        <h1>Las mejores <br> peliculas</h1>
-                        <img src="" alt="">
-                    </div>
+        </div>
+        <%- include('botonUsuario') %>
+            <div class="header-content container">
+                <div class="header-1">
+                    <img src="" alt="">
+                    <a href="#" class="btn-2">Ver ahora</a>
                 </div>
+                <div class="header-2">
+                    <h1>Las mejores <br> peliculas</h1>
+                    <img src="" alt="" />
+                </div>
+            </div>
+
     </header>
-    <script>
-        var infoPeliculasMasVistasJSON = <%- JSON.stringify(infoPeliculasMasVistas) %>;
-        var infoPeliculasAventuraJSON = <%- JSON.stringify(infoPeliculasAventura) %>;
-        var infoPeliculasComediaJSON = <%- JSON.stringify(infoPeliculasComedia) %>;
 
-        var infoPeliculasMasVistasInfantilesJSON = <%- JSON.stringify(infoPeliculasMasVistasInfantiles) %>;
-        var infoPeliculasAventuraInfantilesJSON = <%- JSON.stringify(infoPeliculasAventuraInfantiles) %>;
-        var infoPeliculasComediaInfantilesJSON = <%- JSON.stringify(infoPeliculasComediaInfantiles) %>;
-        var infoPeliculasQueQuizasTeGustenJSON = <%- JSON.stringify(infoPeliculasQueQuizasTeGusten) %>;
-
-    </script>
-
-    <section class="movies container">
-        
-        <% if (perfilCuenta !=='Kids' &&  lista !== 0) { %>
-            <%- html0 %>
-                <button onclick="prueba(infoPeliculasQueQuizasTeGustenJSON, '0')" class="load-more" id="load-more1"> Ver más</button>
-            <% } %>
-                
-        
-    </section>
-    <section class="movies container">
+    <!--
+  
+  <section class="movies container">
         <%- html %>
             <% if (perfilCuenta=='Kids' ) { %>
-                <button onclick="prueba(infoPeliculasMasVistasInfantilesJSON, '1')" class="load-more" id="load-more1">
-                    Cargar más</button>
+                <button onclick="cargarMasPeliculas(infoPeliculasMasVistasInfantilesJSON, '1')" class="load-more"
+                    id="load-more1"> Cargar más</button>
                 <% } else { %>
-                    <button onclick="prueba(infoPeliculasMasVistasJSON, '1')" class="load-more" id="load-more1"> Cargar
-                        más</button>
+                    <button onclick="cargarMasPeliculas(JSON.parse(infoPeliculasMasVistasJSON), '1')" class="load-more"
+                        id="load-more1"> Cargar más</button>
                     <% } %>
-    </section>
+    </section> -->
+   
     <section class="movies container">
         <%- html1 %>
             <% if (perfilCuenta=='Kids' ) { %>
-                <button onclick="prueba(infoPeliculasAventuraInfantilesJSON, '2')" class="load-more" id="load-more2">
-                    Cargar más</button>
+                <button onclick="cargarMasPeliculas('<%= (infoPeliculasAventura) %>', 2)" class="load-more"
+                    id="load-more6"> Cargar más</button>
                 <% } else { %>
-                    <button onclick="prueba(infoPeliculasAventuraInfantilesJSON, '2')" class="load-more"
+                    <button onclick="cargarMasPeliculas('<%= prueba %>', '2')" class="load-more"
                         id="load-more2"> Cargar más</button>
                     <% } %>
     </section>
-
+    <!--
     <section class="movies container">
         <%- html2 %>
             <% if (perfilCuenta=='Kids' ) { %>
                 <% } else { %>
                     <% } %>
-                        <button onclick="prueba(infoPeliculasComediaJSON, '3')" class="load-more" id="load-more3">
-                            Cargar más</button>
-    </section>
+                        <button onclick="cargarMasPeliculas(infoPeliculasComediaJSON, '3')" class="load-more"
+                            id="load-more3"> Cargar más</button>
+    </section> -->
 
     <%- include('footer') %>
 

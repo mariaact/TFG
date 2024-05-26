@@ -46,7 +46,6 @@ fetch('/informacionListaPeliculasBuscador')
 
         const showSuggestions = list => {
             let listData;
-
             if (!list.length) {
                 userValue = inputSearch.value;
                 listData = `<li>${userValue}</li>`;
@@ -63,6 +62,8 @@ fetch('/informacionListaPeliculasBuscador')
 
     function select(element) {
         let selectUserData = element.textContent;
+        console.log('lisraaaaa   ' + selectUserData)
+
         inputSearch.value = selectUserData;
         console.log('has dado al boron ' + inputSearch.value)
         window.location.href = "/peliculaDetallada?valor="+ inputSearch.value;

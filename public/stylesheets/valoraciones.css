@@ -1,6 +1,6 @@
 .contenedorResenas {
   position: absolute; 
-  top: 54%; 
+  top: 60%; 
   left: 50%;
   z-index: 9999; 
   margin-top: 0vh; 
@@ -9,7 +9,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 25vh;
   width: 40vh;
   background-color: transparent; 
   font-family: Arial, sans-serif;    
@@ -26,6 +25,7 @@
   width: 20vh;
   color: white;
   display: none;
+height: 15vh;
 }
 
 h1 {
@@ -70,14 +70,14 @@ h1 {
   cursor: pointer;
 }
 
-#smile {
+.fa-smile {
   color: green;
 }
 
-#meh {
+.fa-meh {
   color: orange;
 }
 
-#frown {
+.fa-frown {
   color: red;
 }
