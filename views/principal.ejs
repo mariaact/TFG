@@ -15,16 +15,34 @@
 
 <body>
     <header class="header">
+        <div class="contenedor-botonVerPelicula">
+            <button class="boton-VerPelicula" onclick="verDetalle()"><i class="fas fa-info-circle" id="infoPeli"></i> Ver Detalles</button>
+        </div>
+
+        <div class="contenedor-botones">
+            <script>
+                // Convertir listaCarrusel1 a una lista de JavaScript
+                var listaCarruselJS = <%- JSON.stringify(listaCarrusel1) %>;
+            </script>   
+            <button class="boton-izq" onclick="carrusel(listaCarruselJS, 'izq')"> <i class="fas fa-chevron-left"></i></button>            
+            <button class="boton-drch" onclick="carrusel(listaCarruselJS, 'drch')"> <i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div id="divTituloPeliculaCarrusel">
+            <h1 id="tituloPeliculaCarrusel"><%-  titulo %></h1>
+        </div>
+        <div class="div-img">
+            <img id="imagenCarrusel" class="img-header" src= <%-  img %>>
+        </div>
         <div id="contenedorFondoNegro" class="contenedorFondoNegro"> </div>
         <div class="menu container">
-            <a href="#" class="logo"> MejoresSeries</a>
+            <a href="#" class="logo"> Cinepolis</a>
             <input type="checkbox" id="menu" />
             <label class="label" for="menu">
                 <img src="/images/menu.png" class="menu-icono" alt="menu">
             </label>
             <nav class="navbar">
                 <ul>
-                    <li><a href="/principal?perfil=<%- perfilCuenta %>&usuario=<%- usuarioCuenta %>"> Inicio</a></li>
+                    <li><a href="/principal?perfil=<%- perfil %>&usuario=<%- usuarioCuenta %>"> Inicio</a></li>
                     <li><a href="#"> Nosotros</a></li>
                     <li><a href="/catalogo"> Peliculas</a></li>
                     <li><a href="/lista"> Lista</a></li>
@@ -65,45 +83,49 @@
         var infoPeliculasComediaInfantilesJSON = <%- JSON.stringify(infoPeliculasComediaInfantiles) %>;
         var infoPeliculasQueQuizasTeGustenJSON = <%- JSON.stringify(infoPeliculasQueQuizasTeGusten) %>;
 
-    </script>
+        var infoPeliculastop10JSON = <%- JSON.stringify(infoPeliculastop10) %>;
 
+    </script>
     <section class="movies container">
-        
-        <% if (perfilCuenta !=='Kids' &&  lista !== 0) { %>
+        <% infoPeliculastop10.lenght%>
+        <% if (perfil !=='Kids' && infoPeliculastop10.lenght !== 0) { %>
+            <%- html10 %>
+                <button onclick="prueba(infoPeliculastop10JSON, '-1')" class="load-more" id="load-more-1"> Ver más</button>
+        <% } %>               
+    </section>
+    <section class="movies container">    
+        <% if (perfil !=='Kids' &&  lista !== 0) { %>
             <%- html0 %>
-                <button onclick="prueba(infoPeliculasQueQuizasTeGustenJSON, '0')" class="load-more" id="load-more1"> Ver más</button>
+                <button onclick="prueba(infoPeliculasQueQuizasTeGustenJSON, '0')" class="load-more" id="load-more0"> Ver más</button>
             <% } %>
-                
-        
     </section>
     <section class="movies container">
         <%- html %>
-            <% if (perfilCuenta=='Kids' ) { %>
+            <% if (perfil =='Kids' ) { %>
                 <button onclick="prueba(infoPeliculasMasVistasInfantilesJSON, '1')" class="load-more" id="load-more1">
-                    Cargar más</button>
+                    Ver más</button>
                 <% } else { %>
-                    <button onclick="prueba(infoPeliculasMasVistasJSON, '1')" class="load-more" id="load-more1"> Cargar
-                        más</button>
+                    <button onclick="prueba(infoPeliculasMasVistasJSON, '1')" class="load-more" id="load-more1"> Ver más</button>
                     <% } %>
     </section>
     <section class="movies container">
         <%- html1 %>
-            <% if (perfilCuenta=='Kids' ) { %>
+            <% if (perfil =='Kids' ) { %>
                 <button onclick="prueba(infoPeliculasAventuraInfantilesJSON, '2')" class="load-more" id="load-more2">
-                    Cargar más</button>
+                    Ver más</button>
                 <% } else { %>
                     <button onclick="prueba(infoPeliculasAventuraInfantilesJSON, '2')" class="load-more"
-                        id="load-more2"> Cargar más</button>
+                        id="load-more2"> Ver más</button>
                     <% } %>
     </section>
 
     <section class="movies container">
         <%- html2 %>
-            <% if (perfilCuenta=='Kids' ) { %>
+            <% if (perfil =='Kids' ) { %>
                 <% } else { %>
                     <% } %>
                         <button onclick="prueba(infoPeliculasComediaJSON, '3')" class="load-more" id="load-more3">
-                            Cargar más</button>
+                            Ver más</button>
     </section>
 
     <%- include('footer') %>
@@ -112,6 +134,8 @@
         <script src="/javascripts/nav.js"></script>
         <script src="/javascripts/cargarPeliculas.js"></script>
         <script src="/javascripts/buscador.js"></script>
+        <script src="/javascripts/carruselPrincipal.js"></script>
+
 </body>
 
 </html>

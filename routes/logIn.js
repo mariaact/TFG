@@ -21,6 +21,7 @@ router.post('/logIn', async function (req, res, next) {
     res.redirect("/paginaUsuarios");
   }else{
     mensaje = usuarioEncontrado;
+    console.log('  -----   ' + mensaje)
     res.render('logIn',  { title: 'Catalago', mensaje })
   }
 });

@@ -103,12 +103,17 @@ router.get('/modificarconfiguracionUsuario', async function (req, res, next) {
 router.get('/borrarUsuario', async function (req, res, next) {
     let usuario = req.query.nombre;
     console.log('esty en el get borrar user   '+ usuario)
+    await database.borrarDatosUsuario(usuario)
     res.redirect('/')
 });
 
+ 
 router.get('/borrarPerfil', async function (req, res, next) {
     let perfil = req.query.nombre;
+    let usuario = req.session.usuario;
+
     console.log('esty en el get borrar perf   '+ perfil)
+     await database.borrarPerfil(usuario, perfil)
     res.redirect('configuracion')
 });
 

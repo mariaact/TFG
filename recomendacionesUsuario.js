@@ -31,11 +31,10 @@ function obtenerPuntajeComentario(sentimiento) {
     }
 }
 
-// Función para analizar el sentimiento de un comentario
+//Analisis de Sentimiento
+// Función para analizar los comentarios 
 function analizarSentimientos(comentario) {
-    // Verificar si el comentario está definido y no es nulo
     if (comentario && typeof comentario === 'string') {
-        // Realizar el análisis de sentimientos
         if (comentario.includes('genial') || comentario.includes('excelente')) {
             return 'positivo';
         } else if (comentario.includes('regular') || comentario.includes('normal')) {
@@ -44,47 +43,116 @@ function analizarSentimientos(comentario) {
             return 'negativo';
         }
     } else {
-        return 'desconocido'; // Manejar el caso en el que el comentario no esté definido
+        return 'desconocido'; 
     }
 }
 
-// Función para calcular la similitud entre el perfil de un usuario y una película
 function calcularSimilitud(usuario, pelicula, perfil) {
+    if (!perfil || !perfil[usuario]) {
+      //  console.error(`El perfil del usuario ${usuario} no está disponible o no contiene información.`);
+        return Number.MAX_VALUE;
+    }
     const valoracionUsuario = perfil[usuario].find(item => item.pelicula === pelicula.titulo);
     if (!valoracionUsuario) {
         return 0; // No hay valoración del usuario para esta película
     }
-
-    // Calcular la similitud entre la valoración del usuario y la película
     const puntajeValoracion = obtenerPuntaje(valoracionUsuario.valoracion);
     const similitud = Math.abs(puntajeValoracion - obtenerPuntaje(pelicula.valoracion)) +
         Math.abs(puntajeValoracion - obtenerPuntajeComentario(analizarSentimientos(valoracionUsuario.comentario)));
     return similitud;
 }
 
-// Función para recomendar películas según los gustos del usuario
 function recomendarPeliculasSegunGustos(usuario, perfilUsuario, catalogoPeliculas) {
-    const perfil = perfilUsuario.perfil; // Perfil del usuario
-
-    // Calcular la similitud entre el perfil del usuario y cada película en el catálogo
+    if (!perfilUsuario || !perfilUsuario.perfil) {
+        throw new Error(`El perfil del usuario ${usuario} no está disponible o no tiene la propiedad 'perfil'.`);
+    }
+    const perfil = perfilUsuario.perfil; 
     const peliculasConSimilitud = catalogoPeliculas.map(pelicula => {
         const similitud = calcularSimilitud(usuario, pelicula, perfil);
         return { pelicula, similitud };
     });
-
-    // Ordenar las películas por similitud de menor a mayor
     peliculasConSimilitud.sort((a, b) => a.similitud - b.similitud);
 
-    // Devolver las N películas más similares
     return peliculasConSimilitud.slice(0, 50).map(item => item.pelicula);
 }
 
-async function principal(nombrePerfil) {
+
+//--------------------------------------------------------------------------------------
+
+
+async function analizarSentimientosValoracionesComentarios() {
+    const todasLasPeliculas = await database.ObtenerTituloGeneroDescripcionDeTodasPeliculas();
+    const todasLasValoraciones = await database.todasLasValoraciones();
+
+    const peliculasMap = new Map();
+    todasLasPeliculas.forEach(pelicula => {
+        peliculasMap.set(pelicula.titulo,{
+            titulo: pelicula.titulo,
+            genero: pelicula.genero, // Supongo que también tienes los IDs de géneros aquí
+            descripcion: pelicula.descripcion,
+            imagen: pelicula.imagen,
+            valoraciones: []
+        });
+    });
+
+    todasLasValoraciones.forEach(valoracion => {
+        if (peliculasMap.has(valoracion.pelicula)) {
+            peliculasMap.get(valoracion.pelicula).valoraciones.push({
+                valoracion: valoracion.valoracion,
+                comentario: valoracion.comentario
+            });
+        }
+    })
+    return Array.from(peliculasMap.values());
+}
+
+function calcularPuntajeTotal(pelicula) {
+    let puntajeTotal = 0;
+    pelicula.valoraciones.forEach(valoracion => {
+        const puntajeValoracion = obtenerPuntaje(valoracion.valoracion);
+        const sentimiento = analizarSentimientos(valoracion.comentario);
+        const puntajeComentario = obtenerPuntajeComentario(sentimiento);
+        puntajeTotal += puntajeValoracion + puntajeComentario;
+    });
+    return puntajeTotal;
+}
+
+// Función para recomendar las 10 mejores películas a nivel global
+async function recomendarTop10Peliculas() {
+    const peliculas = await analizarSentimientosValoracionesComentarios();
+
+    // Calcular el puntaje total para cada película
+    peliculas.forEach(pelicula => {
+        pelicula.puntajeTotal = calcularPuntajeTotal(pelicula);
+    });
+
+    // Ordenar las películas por puntaje total de mayor a menor
+    peliculas.sort((a, b) => b.puntajeTotal - a.puntajeTotal);
+
+    // Devolver las 10 mejores películas
+    return peliculas.slice(0, 10);
+}
+
+async function principal(usuario) {
     const catalogoPeliculas = await database.ObtenerTituloGeneroDescripcionDeTodasPeliculas();
-    const perfilUsuario = await database.analisisSentimiento(nombrePerfil);
-    const recomendaciones = recomendarPeliculasSegunGustos(nombrePerfil, perfilUsuario, catalogoPeliculas);
-    // console.log('Recomendaciones de películas para', nombrePerfil + ':', recomendaciones);
+    const perfilUsuario = await database.analisisSentimiento(usuario);
+    const recomendaciones = recomendarPeliculasSegunGustos(usuario, perfilUsuario, catalogoPeliculas);
+    console.log('Recomendaciones de películas para', usuario + ':', recomendaciones);
+    
     return recomendaciones;
 }
 
-module.exports = { principal };
+async function principalTop10() {
+    const top10Peliculas = await recomendarTop10Peliculas();
+    //console.log('Top 10 películas:', top10Peliculas);
+    return top10Peliculas;
+}
+
+//principalTop10();
+
+principal('lucia')
+
+module.exports = { principal, principalTop10 };
+
+
+

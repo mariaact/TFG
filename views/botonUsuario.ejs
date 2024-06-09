@@ -28,10 +28,12 @@
                 <i class="fas fa-user"></i>
                 <a href="/paginaUsuarios"> Cambiar Perfil</a>
             </li>
-            <li>
-                <i class="fas fa-cog"></i>
-                <a href="/configuracion"> Configuración</a>
-            </li>
+            <% if (perfil != 'Kids') { %>
+                <li>
+                    <i class="fas fa-cog"></i>
+                    <a href="/configuracion"> Configuración</a>
+                </li>
+            <% } %>
             <li>
                 <i class="fas fa-sign-out-alt"></i>
                 <a href="/"> Cerrar Sesión</a>

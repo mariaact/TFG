@@ -86,15 +86,12 @@ async function obtenerTodasLasPeliculas() {
       const data = await response.json();
       const peliculas = data.results;
 
-      // Agregar las películas de la página actual a todasLasPeliculas
       todasLasPeliculas = todasLasPeliculas.concat(peliculas);
 
-      // Si no hay más páginas, salir del bucle
       if (pagina >= 500) {
         break;
       }
 
-      // Ir a la siguiente página
       pagina++;
     }
 

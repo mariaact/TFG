@@ -74,6 +74,14 @@
     border-color: transparent;
     font-size: 2.5vh;
 }
+
+.fa-user,
+.fa-cog,
+.fa-sign-out-alt {
+    color: white;
+}
+
+
 .borrar{
     font-weight: 900;
     width: 100%;

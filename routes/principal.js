@@ -19,6 +19,7 @@ router.get('/principal', async function (req, res, next) {
   const nombrePerfiles = await database.obtenerPerfilesDeUnUsuario(usuarioCuenta);
   const posicionPerfil = nombrePerfiles.indexOf(perfilCuenta);
 
+  const listaCarrusel = await database.obtenerLasCincoPeliculasMasNuevas();
 
   try {
 
@@ -31,39 +32,35 @@ router.get('/principal', async function (req, res, next) {
     const peliculasInfantilesGenero = await database.ObtenerPeliculasInfantilesSegunElGenero(genero);
     const peliculasComediaInfantiles = await database.ObtenerPeliculasInfantilesSegunElGenero(genero1);
 
-
-
     const infoPeliculasMasVistas = JSON.stringify(peliculasPopulares);
     const infoPeliculasAventura = JSON.stringify(peliculas);
     const infoPeliculasComedia = JSON.stringify(peliculasComedia);
-
-
     const infoPeliculasMasVistasInfantiles = JSON.stringify(peliculasPopularesInfantiles);
     const infoPeliculasAventuraInfantiles = JSON.stringify(peliculasInfantilesGenero);
     const infoPeliculasComediaInfantiles = JSON.stringify(peliculasComediaInfantiles);
 
-    //const infoPeliculasQueQuizasTeGusten = (infoPeliculasQueQuizasTeGusten1);
     let infoPeliculasQueQuizasTeGusten = '';
     let peliculasQueQuizasTeGusten = '';
+
+    const peliculastop10 = await recomendacionesUser.principalTop10();
+    const infoPeliculastop10 = JSON.stringify(peliculastop10);
+
+
+
     if(perfilCuenta != 'Kids'){
       lista = await database.listaPeliculasUsuario(usuarioCuenta, perfilCuenta);
-      console.log('------------------------------------------------ ' + lista.length)
       if(lista.length != 0){
-        peliculasQueQuizasTeGusten = await recomendacionesUser.principal(perfilCuenta);
-        console.log('recomendaciones: ' + peliculasQueQuizasTeGusten)
-        console.log(peliculasQueQuizasTeGusten[1].titulo)
-        console.log(peliculasQueQuizasTeGusten.length)
+        peliculasQueQuizasTeGusten = await recomendacionesUser.principal(usuarioCuenta);
         infoPeliculasQueQuizasTeGusten = JSON.stringify(peliculasQueQuizasTeGusten);
-    
       }
-      
     }
   
-
-    let html0 = ''
+    let html0 = '';
     let html = '';
     let html1 = '';
     let html2 = '';
+    let html10 = '';
+
     let numeroRandom1 = 0;
     let numeroRandom2 = 0
     let idCont = 1;
@@ -91,16 +88,17 @@ router.get('/principal', async function (req, res, next) {
           idCont++;
       }
     } else {
+      
 
       if(lista.length != 0){
-        html0 += '<h2> Peliculas que quizás te gusten </h2>  <hr> <div class="box-container-1">';
+        html0 += '<h2> Peliculas que quizás te gusten </h2>  <hr> <div class="box-container-0">';
       }
       for (let i = 0; i < 4; i++) {
 
         console.log(peliculas.length + '   ****   ' + peliculasComedia.length)
         if(lista.length != 0){
-          html0 += '<div class="box-1"><div class="content"><img class="imagenPelicula" id="img1-'+idCont+'" src="https://image.tmdb.org/t/p/original' + peliculasQueQuizasTeGusten[i].imagen + ' " alt=""> ' +
-          '<h3 id="h31-'+idCont+'">' + peliculasQueQuizasTeGusten[i].titulo + '</h3> <a id="enlacePelicula1-'+idCont+'" href="/peliculaDetallada?valor=' + peliculasQueQuizasTeGusten[i].titulo + '"> ver mas </a>  </div>   </div>  '  
+          html0 += '<div class="box-0"><div class="content"><img class="imagenPelicula" id="img0-'+idCont+'" src="https://image.tmdb.org/t/p/original' + peliculasQueQuizasTeGusten[i].imagen + ' " alt=""> ' +
+          '<h3 id="h30-'+idCont+'">' + peliculasQueQuizasTeGusten[i].titulo + '</h3> <a id="enlacePelicula0-'+idCont+'" href="/peliculaDetallada?valor=' + peliculasQueQuizasTeGusten[i].titulo + '"> ver mas </a>  </div>   </div>  '  
         }
        
         html += '<div class="box-1"><div class="content"><img class="imagenPelicula" id="img1-'+idCont+'" src="https://image.tmdb.org/t/p/original' + peliculasPopulares[i].poster_path + ' " alt=""> ' +
@@ -117,13 +115,39 @@ router.get('/principal', async function (req, res, next) {
       }
     }
 
+    if(peliculastop10.length !== 0){
+      html10 += '<h2> TOP 10 </h2>  <hr> <div class="box-container-10">';
+    }
+
+    idCont = 1;
+    console.log(peliculastop10)
+    for (let i = 0; i < 5; i++) {
+
+     console.log(idCont + '       ¡¡¡¡¡¡¡¡¡   ' + i)
+      if(peliculastop10.length !== 0){
+        html10 += '<div class="box-10"><div class="content"><img class="imagenPelicula" id="img10-'+idCont+'" src="https://image.tmdb.org/t/p/original' + peliculastop10[i].imagen + ' " alt=""> ' +
+        '<h3 id="h310-'+idCont+'">' + peliculastop10[i].titulo + '</h3> <a id="enlacePelicula10-'+idCont+'" href="/peliculaDetallada?valor=' + peliculastop10[i].titulo + '"> ver mas </a>  </div>   </div>  '  
+      }
+      idCont++;
+    
+    }
+
     html0 += '</div>';
     html += '</div>';
     html1 += '</div>';
     html2 += '</div>';
+    html10 += '</div>';
+
+    
+
 
   lista = lista.length;
-  res.render('principal', { lista, html0, html, html1, html2, perfilCuenta, usuarioCuenta, nombrePerfiles, posicionPerfil, infoPeliculasMasVistas, infoPeliculasAventura, infoPeliculasComedia, infoPeliculasMasVistasInfantiles, infoPeliculasAventuraInfantiles, infoPeliculasComediaInfantiles, infoPeliculasQueQuizasTeGusten});
+  const listaCarrusel1 = JSON.stringify(listaCarrusel);
+
+  const titulo = listaCarrusel[0].title
+  const img = "https://image.tmdb.org/t/p/original"+ listaCarrusel[0].backdrop_path
+
+  res.render('principal', { titulo, img, listaCarrusel1, lista, html0, html, html1, html2, html10, perfil: perfilCuenta, usuarioCuenta, nombrePerfiles, posicionPerfil, infoPeliculasMasVistas, infoPeliculasAventura, infoPeliculasComedia, infoPeliculasMasVistasInfantiles, infoPeliculasAventuraInfantiles, infoPeliculasComediaInfantiles, infoPeliculasQueQuizasTeGusten, infoPeliculastop10});
 
   } catch (error) {
     console.error('Error al consultar las películas:', error);
@@ -135,15 +159,10 @@ router.get('/informacionListaPeliculasBuscador', async (req, res) => {
 
     let resultado = '';
     if(req.session.perfiles == 'Kids'){
-      console.log('buscador kids')
       resultado = await database.obtenerTitulosPeliculasInfantiles();
-
     }else{
-      console.log('buscador normal')
       resultado = await database.obtenerTitulosPeliculas();
     }
-
-    console.log(resultado)
     res.json(resultado);
   } catch (error) {
     console.error('Error al obtener información:', error);

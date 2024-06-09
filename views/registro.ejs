@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
- 
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Conpatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
 
     <link rel="stylesheet" href="/stylesheets/carrusel.css">
     <link rel="stylesheet" href="/stylesheets/login.css">
@@ -18,7 +18,7 @@
 
     <header class="header">
         <div class="menu container"> <!--menu principal-->
-            <a href="#" class="logo"> MejoresSeries</a>
+            <a href="" class="logo"> <!--<img src="/images/logoCinepolis.png">--> Cinepolis</a>
 
             <input type="checkbox" id="menu" />
             <label class="label" for="menu">
@@ -27,11 +27,12 @@
 
         </div>
 
-    <div id="registro">
+        <div id="registro">
             <h2> Registro </h2>
             <form action="/registro" method="post">
                 <label class="camposRegistro" for="usernameRegistro"> Nombre de usuario: </label>
-                <input type="text" id="usernameRegistro" name="usernameRegistro" placeholder="Escribe tu nombre de usuario..." required>
+                <input type="text" id="usernameRegistro" name="usernameRegistro"
+                    placeholder="Escribe tu nombre de usuario..." required>
 
                 <label class="camposRegistro" for="emailRegistro"> Email: </label>
                 <input type="text" id="emailRegistro" name="emailRegistro" placeholder="Escribe tu email..." required>
@@ -40,7 +41,8 @@
 
                 <div class="contrasena">
 
-                    <input type="password" for="passwordRegisto" id="passwordRegistro" name="passwordRegistro" placeholder="Escribe tu contraseña..." required></input>
+                    <input type="password" for="passwordRegisto" id="passwordRegistro" name="passwordRegistro"
+                        placeholder="Escribe tu contraseña..." required></input>
 
                     <button class="toggleContrasena" onclick="toggleMostrarContrasena()">
                         <i class="fas fa-eye-slash"></i>
@@ -48,16 +50,16 @@
 
                 </div>
 
-                
+
                 <div class="contenedorRegistro">
                     <a id="enlaceCuentaExistente" class="enlaceRegistro" href="/">¿Ya tienes cuenta? Inicia Sesión</a>
                 </div>
                 <input class="botonLogIn" type="submit" value="Registrar">
             </form>
-           <%- errores %> 
+            <%- errores %>
         </div>
-        
-        
+
+
     </header>
 
     <div class="carrusel">
@@ -76,3 +78,4 @@
 </body>
 
 </html>
+

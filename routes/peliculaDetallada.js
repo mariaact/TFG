@@ -17,6 +17,7 @@ const db = client.db(dbName);
 router.get('/peliculaDetallada', async function (req, res, next) {
 
   const nombrePelicula = req.query.valor;
+  console.log('*////////*///////   ' + nombrePelicula)
   const perfil = req.session.perfiles
   const user = req.session.usuario
   const nombrePerfiles = await database.obtenerPerfilesDeUnUsuario(user);

@@ -16,7 +16,8 @@ router.get('/catalogo', async function (req, res, next) {
 
   const peliculasGeneros = await database.peliculasMasVistas();
   const peliculasMasVistasInfantiles = await database.ObtenerPeliculasMasPopularesInfantiles();
-  const generos = await database.obtenerTodosLosGeneros();
+  const generos = await database.obtenerTodosLosNombresGeneros();
+  const generoPeliculasInfantiles = await database.obtenerGenerosPeliculasInfantiles();
 
   let html = '';
   let cont = 0;
@@ -26,11 +27,19 @@ router.get('/catalogo', async function (req, res, next) {
   const usuario = req.session.usuario;
   const perfil = req.session.perfiles;
 
-
-  for (let i = 0; i <= generos.length; i++) {
-    listaGenero += `<input type="checkbox" name="opcion" value="${generos[i]}">
-                           <label>${generos[i]}</label><br>`;
+  if (perfil == 'Kids') {
+    for (let i = 0; i < generoPeliculasInfantiles.length; i++) {
+      listaGenero += `<input type="checkbox" name="opcion" value="${generos[i]}">
+                             <label>${generos[i]}</label><br>`;
+    }
+  }else{
+    for (let i = 0; i < (generos.length -1); i++) {
+      listaGenero += `<input type="checkbox" name="opcion" value="${generos[i]}">
+                             <label>${generos[i]}</label><br>`;
+    }
   }
+
+ 
 
   html += '<h2> Películas </h2>  <hr> ';
 
@@ -84,7 +93,7 @@ router.get('/cargarMasPeliculas', async function (req, res, next) {
   const peliculasGeneros = await database.peliculasMasVistas();
   const peliculasMasVistasInfantiles = await database.ObtenerPeliculasMasPopularesInfantiles();
 
-  const generos = await database.obtenerTodosLosGeneros();
+  const generos = await database.obtenerTodosLosNombresGeneros();
 
   let html = '';
 
@@ -146,7 +155,7 @@ router.post('/guardar-filtro', async function (req, res) {
   const nombrePerfiles = await database.obtenerPerfilesDeUnUsuario(req.session.usuario);
   const posicionPerfil = nombrePerfiles.indexOf(req.session.perfiles);
 
-  const generos = await database.obtenerTodosLosGeneros();
+  const generos = await database.obtenerTodosLosNombresGeneros();
 
   let listaGenero = '';
 

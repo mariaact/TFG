@@ -2,6 +2,10 @@
     top: 3vh;
 }
 
+.errorLogIn {
+    color: rgb(183, 47, 47);
+}
+
 #div-sobresaliente {
     position: fixed;
     top: 50%;

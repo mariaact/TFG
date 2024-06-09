@@ -4,7 +4,7 @@ window.addEventListener("scroll", function(){
     var fondoNegro = document.getElementById('contenedorFondoNegro');
     var altura = window.innerHeight * 0.1;
 
-    if(scrollPosotion >=  450){
+    if(scrollPosotion >=  211){
         fondoNegro.style.display = 'block';
     } else{
         fondoNegro.style.display = 'none';

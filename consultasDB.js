@@ -26,24 +26,13 @@ async function obtenerTodaLaInformacionUsuario(nombreUsuario) {
   return resultado;
 }
 
-/*
-cambiarUsuarioEmailPerfil('luPerfil', 'lucia', 'perfil')
-  .then(resultado => {
-    console.log('Resultado:', resultado);
-  })
-  .catch(error => {
-    console.error('Error al obtener información de películas:', error);
-  });
-
-*/
-
 async function cambiarUsuarioEmailPerfil(valorNuevo, valorActual, parametro) {
   const collection = db.collection('Users');
   console.log(valorActual + '*/*/*/*/*/*')
   const usuarioExiste = await comprobarnombreUsuario(valorActual);
   const comprobarSiExisteUsuarioConEseNombre = await comprobarnombreUsuario(valorNuevo);
   if (parametro == 'nombre') {
-    if(validarNombre(valorNuevo).length == 0){
+    if (validarNombre(valorNuevo).length == 0) {
       if (comprobarSiExisteUsuarioConEseNombre) {
         return 'El nombre de usuario ya existe'
       } else {
@@ -68,9 +57,9 @@ async function cambiarUsuarioEmailPerfil(valorNuevo, valorActual, parametro) {
           }
         }
       }
-    }else{
+    } else {
       return validarNombre(valorNuevo);
-    }    
+    }
   } else if (parametro == 'email') {
 
     if (validarEmail(valorNuevo).length != 0) {
@@ -115,14 +104,14 @@ async function cambiarUsuarioEmailPerfil(valorNuevo, valorActual, parametro) {
 
 function validarNombre(nombre) {
   let textoError = "";
-  var patronNombre = /^[a-z]+$/; 
+  var patronNombre = /^[a-z]+$/;
 
   if (nombre.length === 0) {
     textoError += "El nombre está vacío</br>";
-  }else if(!patronNombre.test(nombre)) {
+  } else if (!patronNombre.test(nombre)) {
     textoError += "El nombre de usuario no cumple el patrón</br>";
   }
-  
+
   return textoError;
 }
 
@@ -166,11 +155,11 @@ async function comprobarUsuario(nombreUsuario, contra) {
       return usuarioExiste;
     } else {
       // throw new Error('Contraseña invalida')
-      return 'Contraseña invalida</br>'
+      return '<p class="errorLogIn">Contraseña invalida</p></br>'
     }
   } else {
     //throw new Error('Usuario no encontrado')
-    return 'El usuario no existe</br>'
+    return '<p class="errorLogIn">El usuario no existe</p></br>'
   }
 }
 
@@ -250,9 +239,53 @@ async function listaPeliculasUsuario(nombre, perfil) {
   }
 }
 
-async function borrarUsuario(usuario){
+async function borrarDatosUsuario(usuario) {
+  console.log('--------------' )
 
+  const collection = db.collection('Users');
+  const usuario1 = await collection.findOne({ nombre: usuario });
+  console.log('--------------' + usuario1)
+  try {
+    // Intenta eliminar el usuario
+    const result = await collection.deleteOne({nombre: usuario} );
+
+    // Verifica si la operación fue reconocida y si se eliminó algún documento
+    if (result.acknowledged && result.deletedCount > 0) {
+      console.log(`Usuario ${usuario} eliminado exitosamente.`);
+      return true;
+    } else {
+      console.log(`No se pudo eliminar el usuario ${usuario}.`);
+      return false;
+    }
+  } catch (error) {
+    console.error(`Error al intentar eliminar el usuario ${usuario}:`, error);
+    return false;
+  }
 }
+
+/*
+borrarDatosUsuario('prueba')
+  .then(resultado => {
+    console.log('Resultado:', resultado);
+  })
+  .catch(error => {
+    console.error('Error al obtener información de películas:', error);
+  });*/
+
+
+
+async function borrarPerfil(usuario, perfil) {
+  const collection = db.collection('Users');
+  const result = await collection.updateOne(
+    { nombre: usuario },
+  { $pull: { perfiles: {nombre: perfil}}});
+  if(result){
+    return true;
+  }else{
+    false
+  }
+}
+
 
 async function obtenerIDUsuario(usuario) {
   const collection = db.collection('Users');
@@ -392,8 +425,14 @@ async function eliminarPeliculaListaPerfil(usuario, perfil, pelicula) {
   };
 }
 
-
 async function obtenerTodosLosGeneros() {
+  const collection = db.collection('generos');
+  const generos = await collection.find().toArray();
+  return generos;
+}
+
+//nombre
+async function obtenerTodosLosNombresGeneros() {
   const collection = db.collection('generos');
   const generos = await collection.find().toArray();
   return generos.map(genero => genero.name);
@@ -487,69 +526,6 @@ async function obtenerTitulosPeliculasInfantiles() {
 }
 
 
-/*
-obtenerTodosLosComentarios('Dune: Parte dos')
-  .then(resultado => {
-    console.log('Resultado:', resultado);
-  })
-  .catch(error => {
-    console.error('Error al obtener información de películas:', error);
-  });**/
-/*
-añadirNuevoComenatrio('Dune: Parte dos', 'la pelicula me ha gustado bastantes, es muy entretenida', 'maria', 'julia')
-.then(resultado => {
-console.log('Resultado:', resultado);
-})
-.catch(error => {
-console.error('Error al obtener información de películas:', error);
-});
-*/
-
-
-
-
-/*
-async function ObtenerTituloGeneroDescripcionDeTodasPeliculas() {
-  try {
-    const collection = db.collection('peliculas');
-    const todasLasPeliculas = await collection.find();
-
-    console.log(todasLasPeliculas)
-
-   // const nombrePerfiles = usuarioEncontrado.perfiles.map(perfil => perfil.nombre);
-    return 0;
-  } catch (error) {
-    console.error('Error al obtener ID del usuario:', error);
-    throw error;
-  };
-}*/
-
-
-async function ObtenerTituloGeneroDescripcionDeTodasPeliculas() {
-  const resultado = [];
-  const collection = db.collection('peliculas');
-  const todasLasPeliculas = await collection.find().toArray();
-  for (const pelicula of todasLasPeliculas) {
-    const infoTransformada = {
-      titulo: pelicula.title,
-      genero: await obtenerNombreGenero(pelicula.genre_ids),
-      descripcion: pelicula.overview,
-      imagen: pelicula.poster_path
-    };
-    resultado.push(infoTransformada)
-  }
-  return resultado;
-}
-
-/*
-ObtenerTituloGeneroDescripcionDeTodasPeliculas()
-  .then(resultado => {
-    console.log('Resultado:', resultado);
-  })
-  .catch(error => {
-    console.error('Error al obtener información de películas:', error);
-  });*/
-
 async function ObtenerPeliculasInfantiles() {
   const collection = db.collection('peliculas');
   const peliculasInfantiles = await collection.findOne({ certificacion: 'APTA' })
@@ -591,6 +567,148 @@ async function obtenerGenerosPeliculasInfantiles() {
 
   return nombregenero;
 }
+/*
+obtenerGenerosPeliculasInfantiles()
+  .then(resultado => {
+    console.log('Resultado:', resultado);
+  })
+  .catch(error => {
+    console.error('Error al obtener información de películas:', error);
+  });
+*/
+
+
+
+/*
+obtenerTodosLosComentarios('Dune: Parte dos')
+  .then(resultado => {
+    console.log('Resultado:', resultado);
+  })
+  .catch(error => {
+    console.error('Error al obtener información de películas:', error);
+  });**/
+/*
+añadirNuevoComenatrio('Dune: Parte dos', 'la pelicula me ha gustado bastantes, es muy entretenida', 'maria', 'julia')
+.then(resultado => {
+console.log('Resultado:', resultado);
+})
+.catch(error => {
+console.error('Error al obtener información de películas:', error);
+});
+*/
+
+
+
+
+/*
+async function ObtenerTituloGeneroDescripcionDeTodasPeliculas() {
+  try {
+    const collection = db.collection('peliculas');
+    const todasLasPeliculas = await collection.find();
+
+    console.log(todasLasPeliculas)
+
+   // const nombrePerfiles = usuarioEncontrado.perfiles.map(perfil => perfil.nombre);
+    return 0;
+  } catch (error) {
+    console.error('Error al obtener ID del usuario:', error);
+    throw error;
+  };
+}*/
+
+/*
+async function ObtenerTituloGeneroDescripcionDeTodasPeliculas() {
+  const resultado = [];
+  const collection = db.collection('peliculas');
+  const todasLasPeliculas = await collection.find().toArray();
+  for (const pelicula of todasLasPeliculas) {
+    const infoTransformada = {
+      titulo: pelicula.title,
+      genero: await obtenerNombreGenero(pelicula.genre_ids),
+      descripcion: pelicula.overview,
+      imagen: pelicula.poster_path
+    };
+    resultado.push(infoTransformada)
+  }
+  return resultado;
+}*/
+
+async function ObtenerTituloGeneroDescripcionDeTodasPeliculas() {
+  const collection = db.collection('peliculas');
+  const todasLasPeliculas = await collection.find().toArray();
+  const todosLosGeneros = await obtenerTodosLosGeneros();
+  const mapaIDNombreGeneros = new Map();
+  todosLosGeneros.forEach(genero => {
+    mapaIDNombreGeneros.set(genero.id, genero.name);
+  });
+
+  const transformacion = todasLasPeliculas.map(async (pelicula) => {
+    const nombreGenero = pelicula.genre_ids.map(id => mapaIDNombreGeneros.get(id)).join(', ');
+    return {
+      titulo: pelicula.title,
+      genero: nombreGenero,
+      descripcion: pelicula.overview,
+      imagen: pelicula.poster_path
+    };
+  });
+  return Promise.all(transformacion);
+}
+
+async function obtenerLasCincoPeliculasMasNuevas() {
+  const collection = db.collection('peliculas');
+  var fecha = new Date();
+  var ano = fecha.getFullYear();
+  var mes = ('0' + (fecha.getMonth() + 1)).slice(-2);
+  var dia = ('0' + fecha.getDate()).slice(-2); 
+  var fechaActual = ano + '-' + mes + '-' + dia;
+  console.log(fechaActual)
+  const peliculasOrdenacionFecha = await collection.find({ release_date: { $lte: fechaActual } }).sort({ release_date: - 1 }).limit(5);
+
+  return peliculasOrdenacionFecha.toArray();
+
+}
+
+/*
+obtenerLasCincoPeliculasMasNuevas()
+  .then(resultado => {
+    console.log('Resultadoo:', resultado);
+    console.log(resultado.length)
+  })
+  .catch(error => {
+    console.error('Error al obtener información de películas:', error);
+  });*/
+
+
+async function todasLasValoraciones() {
+  const collection = db.collection('valoraciones');
+  const valoraciones = await collection.find().toArray();
+  //const nombrePerfiles = new Set();
+  const nombrePerfiles = new Map();
+
+  for (const valoracion of valoraciones) {
+    for (const perfil in valoracion.perfil) {
+      if (!nombrePerfiles.has(perfil)) {
+        nombrePerfiles.set(valoracion.usuario, perfil)
+
+      }
+    }
+  }
+
+  let final = [];
+
+  for (const [usuario, perfil] of nombrePerfiles) {
+    console.log(`Usuario: ${usuario}, Perfil: ${perfil}`);
+    const resultado = await mostrarTodasLasValoraciones(usuario, perfil);
+    final = final.concat(resultado);
+  }
+
+  return final;
+}
+
+
+
+
+
 
 async function comprobarExistenciausuarioValoraciones(usuario) {
   const collection = db.collection('valoraciones');
@@ -606,11 +724,11 @@ async function comprobarExistenciausuarioValoraciones(usuario) {
     });
 }
 
-async function mostrarTodasLasValoraciones(nombrePerfil) {
+async function mostrarTodasLasValoraciones(usuario, nombrePerfil) {
   const collection = db.collection('valoraciones');
   //const usuarioResultado = await collection.findOne({ 'usuario': 'maria' }, { projection: { 'perfil.maria': 1 } });
 
-  const usuarioResultado = await collection.findOne({ 'usuario': nombrePerfil }, { projection: { [`perfil.${nombrePerfil}`]: 1 } });
+  const usuarioResultado = await collection.findOne({ 'usuario': usuario }, { projection: { [`perfil.${nombrePerfil}`]: 1 } });
   if (!usuarioResultado) {
     return false;
   }
@@ -900,7 +1018,13 @@ async function ObtenerPeliculaDeLasRecomendaciones(nombrePelicula) {
   return infoPelicula;
 }
 
+async function borrarUsuario(nombreUsuario) {
+  const collection = db.collection('Valoraciones');
+  const infoPelicula = await collection.deleteOne({ usuario: nombreUsuario })
+  return infoPelicula;
+}
 
 
 
-module.exports = { obtenerTitulosPeliculasInfantiles, cambiarUsuarioEmailPerfil, obtenerTodaLaInformacionUsuario, analisisSentimiento, mostrarTodasLasValoraciones, cambiarContrasenna, comprobarnombreUsuario, registrarUsuario, comprobarUsuario, obtenerTodosLosComentarios, añadirNuevoComenatrio, añadirNuevaValoracion, obtenerGenerosPeliculasInfantiles, ObtenerPeliculasMasPopularesInfantiles, ObtenerPeliculasInfantiles, ObtenerPeliculasInfantilesSegunElGenero, ObtenerTituloGeneroDescripcionDeTodasPeliculas, ObtenerPeliculaDeLasRecomendaciones, ObtenerInformacionPeliculasRecomendaciones, comprobarExistenciausuario, agregarPeliculaListaPerfil, eliminarPeliculaListaPerfil, obtenerPerfilesDeUnUsuario, añadirNuevoPerfil, obtenerTitulosPeliculas, obtenerInfoPeliculasGenero, peliculasMasVistas, obtenerTodosLosGeneros, peliculaDetalles, obtenerNombreGenero, comprobarPeliculaLista, listaPeliculasUsuario };
+
+module.exports = { borrarDatosUsuario, borrarPerfil, obtenerLasCincoPeliculasMasNuevas, todasLasValoraciones, obtenerTodosLosNombresGeneros, obtenerTitulosPeliculasInfantiles, cambiarUsuarioEmailPerfil, obtenerTodaLaInformacionUsuario, analisisSentimiento, mostrarTodasLasValoraciones, cambiarContrasenna, comprobarnombreUsuario, registrarUsuario, comprobarUsuario, obtenerTodosLosComentarios, añadirNuevoComenatrio, añadirNuevaValoracion, obtenerGenerosPeliculasInfantiles, ObtenerPeliculasMasPopularesInfantiles, ObtenerPeliculasInfantiles, ObtenerPeliculasInfantilesSegunElGenero, ObtenerTituloGeneroDescripcionDeTodasPeliculas, ObtenerPeliculaDeLasRecomendaciones, ObtenerInformacionPeliculasRecomendaciones, comprobarExistenciausuario, agregarPeliculaListaPerfil, eliminarPeliculaListaPerfil, obtenerPerfilesDeUnUsuario, añadirNuevoPerfil, obtenerTitulosPeliculas, obtenerInfoPeliculasGenero, peliculasMasVistas, obtenerTodosLosGeneros, peliculaDetalles, obtenerNombreGenero, comprobarPeliculaLista, listaPeliculasUsuario };

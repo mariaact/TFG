@@ -1,11 +1,13 @@
-
 .btn-User {
     position: fixed;
     top: 2vh;
     right: 3vh;
     z-index: 9999;
     width: 40px;
-  height: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .navbarUsuario {
@@ -14,7 +16,7 @@
     top: 9vh;
     right: 2vh;
     padding: 20px;
-    height: 20vh;
+    height: auto;
     font-family: Arial, Helvetica, sans-serif;
     background-color: rgba(0, 0, 0, 0.4);
     z-index: 9999;
@@ -22,6 +24,14 @@
 
 .navbarUsuario li {
     margin-bottom: 3vh;
+}
+
+.navbarUsuario li:first-child {
+    margin-top: 1vh;
+}
+
+.navbarUsuario li:last-child {
+    margin-bottom: 1vh;
 }
 
 .navbarUsuario i {
@@ -32,8 +42,9 @@
     color: white;
     font-size: 2vh;
 }
+
 .imagenUser {
-    width: 40px;
-    height: 40px;
-    align-items: center;
+    width: 80%;
+    height: auto;
+    background: transparent;
 }
