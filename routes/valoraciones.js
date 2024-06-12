@@ -3,6 +3,11 @@ var router = express.Router();
 var database = require('../consultasDB');
 
 
+const { ethers } = require('ethers');
+const { provider, wallet } = require('../ganache-config');
+
+
+
 /* GET users listing. */
 router.get('/valoraciones', async function (req, res, next) {
   const pelicula = req.query.titulo;
@@ -79,17 +84,58 @@ router.post('/valoraciones', async function (req, res, next) {
     }
   })
 
+  try {
+
+    const user = await database.obtenerTodaLaInformacionUsuario(usuario);
+    console.log('info de los usuarios  ' + user.direccionWallet)
+
+    // Calcula el incentivo basado en la valoración
+    const incentive = ethers.utils.parseEther((1.01).toString());
+    
+
+    console.log(user.direccionWallet)
+
+    try {
+      // Crear una transacción
+      const tx = {
+        to: user.direccionWallet,
+        value: incentive,
+      };
+
+      console.log(tx)
+      console.log(wallet)
+
+      // Enviar la transacción
+      const transaction = await wallet.sendTransaction(tx);
+      await transaction.wait();
+
+
+      console.log(`Incentivo de ${ethers.utils.formatEther(incentive)} ETH enviado a ${user.direccionWallet}`)
+
+      // Esperar a que la transacción se confirme
+      const receipt = await transaction.wait();
+      if (receipt.status === 1) {
+        console.log(`Incentivo de ${ethers.utils.formatEther(incentive)} ETH enviado a ${user.direccionWallet}`);
+      } else {
+        console.log('La transacción falló');
+      }
+
+      const initialBalance = await wallet.provider.getBalance(user.direccionWallet);
+      const finalBalance = await wallet.provider.getBalance(user.direccionWallet);
+
+      console.log('Balance inicial:', ethers.utils.formatEther(initialBalance));
+      console.log('Balance final:', ethers.utils.formatEther(finalBalance));
+
+    } catch (error) {
+      console.error(error);
+    }
+
+  } catch (error) {
+
+  }
+  
   res.render('valoraciones', { pelicula, html, perfil, usuario, posicionPerfil});
 });
 
-/*
-app.post('/valoraciones', (req, res) => {
-    console.log('Request Body:', req.body);
-    const valoracion = req.body.textoValoracion;
-    console.log('Valoración guardada:', valoracion);
-    res.redirect('/valoraciones');
-});
-
-*/
 
 module.exports = router;
