@@ -136,6 +136,7 @@ elemento {
     width: -webkit-fill-available;
     width: fill-available;
     position: absolute;
+    background: rgb(12, 39, 55);
 }
 
 .itemCrit .headCri a,

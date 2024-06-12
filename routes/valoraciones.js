@@ -2,11 +2,8 @@ var express = require('express');
 var router = express.Router();
 var database = require('../consultasDB');
 
-
 const { ethers } = require('ethers');
 const { provider, wallet } = require('../ganache-config');
-
-
 
 /* GET users listing. */
 router.get('/valoraciones', async function (req, res, next) {
@@ -38,7 +35,7 @@ router.get('/valoraciones', async function (req, res, next) {
       }else if(nombrePerfiles.indexOf(resultado[i].nombrePerfil) == 3){
         color = 'icon3';
       }
-      console.log(color)
+      console.log('colores iconoo ------ '   + color)
       html += '<div class="itemCrit" data-id="1403"><div class="headCri canReply" style="padding: 1.3vh 1.3vh 1.3vh 1.3vh;">'
       + '<div class="uAvatar"><img id="'+color+'" class="iconUser" src="/images/userIcon.png"></div><a href="javascript:void(0)">'+resultado[i].nombrePerfil +' [ '+resultado[i].usuario+' ]</a>'
       + '<p class="dateContainer"></p></div> <div class="cuerCri canReply">'+resultado[i].comentario+'</div></div>'
@@ -68,7 +65,6 @@ router.post('/valoraciones', async function (req, res, next) {
   console.log('Resultado:', resultado);
     for(let i = 0; i< resultado.length; i++){
       const nombrePerfiles = await database.obtenerPerfilesDeUnUsuario(usuario);
-      console.log(nombrePerfiles.indexOf(resultado[i].nombrePerfil))
       let color = '';
       if(nombrePerfiles.indexOf(resultado[i].nombrePerfil) == 0){
         color = 'box1';
