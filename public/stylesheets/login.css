@@ -2,6 +2,14 @@
     top: 3vh;
 }
 
+.fa-eye-slash::after {
+    top: 80%;
+}
+
+.fa-eye-slash::before {
+    top: 30%;
+}
+
 .errorLogIn {
     color: rgb(183, 47, 47);
 }
@@ -182,13 +190,11 @@ label {
 .toggleContrasena i {
     color: rgb(21, 91, 132);
     font-size: 1.5em;
-    /* Color azul */
 }
 
 .toggleContrasenaLogin i {
     color: rgb(21, 91, 132);
     font-size: 1.5em;
-    /* Color azul */
 }
 
 #passwordRegistro {

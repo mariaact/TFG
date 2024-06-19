@@ -50,7 +50,7 @@ router.get('/principal', async function (req, res, next) {
     if(perfilCuenta != 'Kids'){
       lista = await database.listaPeliculasUsuario(usuarioCuenta, perfilCuenta);
       if(lista.length != 0){
-        peliculasQueQuizasTeGusten = await recomendacionesUser.principal(usuarioCuenta);
+        peliculasQueQuizasTeGusten = await recomendacionesUser.principal(usuarioCuenta, perfilCuenta);
         infoPeliculasQueQuizasTeGusten = JSON.stringify(peliculasQueQuizasTeGusten);
       }
     }

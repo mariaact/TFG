@@ -41,7 +41,7 @@ router.get('/catalogo', async function (req, res, next) {
 
  
 
-  html += '<h2> Películas </h2>  <hr> ';
+  html += '<h2> Catálogo </h2>  <hr> ';
 
   if (perfil == 'Kids') {
     for (let i = 0; i <= 3; i++) {
@@ -107,7 +107,7 @@ router.get('/cargarMasPeliculas', async function (req, res, next) {
                            <label>${generos[i]}</label><br>`;
   }
 
-  html += '<h2> Películas </h2>  <hr> ';
+  html += '<h2> Catálogo </h2>  <hr> ';
 
   if (perfil == 'Kids') {
     for (let i = 0; i <= 3; i++) {
