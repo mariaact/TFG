@@ -53,6 +53,7 @@ const usuarioSchema = new mongoose.Schema({
   nombre: { type: String, required: true },
   contraseña: { type: String, required: true },
   email: { type: String, required: true },
+  direccionWallet: { type: String, required: true },
   perfiles: [{
     nombre: { type: String, required: true },
     iconUser: { type: String, required: true },
@@ -70,11 +71,12 @@ const usuarioSchema = new mongoose.Schema({
 const valoracionesSchema = new mongoose.Schema({
   usuario: { type: String, required: true },
   perfil: {
-    luPerfil: [{
+    type: Map,
+    of: [{
       pelicula: { type: String, required: true },
       valoracion: { type: String },
       comentario: { type: String }
-    }]  
+    }]
   }
 }, {
   timestamps: false,  
@@ -82,7 +84,6 @@ const valoracionesSchema = new mongoose.Schema({
   minimize: false,    
   strict: true        
 });
-
 
 const Generos = mongoose.model('Generos', collectionNameSchema);
 const Pelicula = mongoose.model('Peliculas', peliculasSchema);
@@ -223,7 +224,7 @@ function validarEmail(email) {
 }
 
 
-async function registrarUsuario(nombreUsuario, contra, email) {
+async function registrarUsuario(nombreUsuario, contra, email, wallet) {
   //const collection = db.collection('Users');
   const saltRounds = 10; //el algoritmo de hashing dará 10 vueltas
   const hashedPassword = await bcrypt.hash(contra, saltRounds);
@@ -231,6 +232,7 @@ async function registrarUsuario(nombreUsuario, contra, email) {
     nombre: nombreUsuario,
     contraseña: hashedPassword,
     email: email,
+    direccionWallet: wallet.address,
     perfiles: [
       { nombre: nombreUsuario, iconUser: '/images/userIcon.png', peliculas: [] },
       { nombre: 'Kids', iconUser: '/images/userIconKids.png', peliculas: [] }
@@ -819,7 +821,6 @@ async function analisisSentimiento(nombreUsuario, nombrePerfil) {
 
   // Realizar la consulta para obtener la información del usuario
   const usuario = await Valoraciones.findOne({ 'usuario': nombreUsuario });
-  console.log('usuario ' + usuario.perfil[nombreUsuario])
 
   // Verificar si se encontró el usuario
   if (!usuario) {
@@ -903,19 +904,27 @@ async function guardarValoracionesActualizadas(nombrePerfil, valoraciones) {
     console.error("Error al guardar las valoraciones actualizadas:", error);
   }
 }
-*/
+*//*
+añadirNuevaValoracion('Wonka', 'Hola que tal', 'maria', 'maria')
+.then(resultado => {
+
+console.log(resultado );
+})
+.catch(error => {
+console.error('Error al obtener información de películas:', error);
+});*/
 
 async function añadirNuevaValoracion(pelicula, valoracion, usuario, perfil) {
   try {
-    //const collection = db.collection('valoraciones');
     const usuarioExiste = await comprobarExistenciausuario(usuario);
     const usuarioValorado = await comprobarExistenciausuarioValoraciones(usuario);
     const perfilEncontrado = await comprobarExistenciaPerfil(usuario, perfil);
 
+    console.log(usuarioExiste + '  *******    ' + perfilEncontrado);
+
     if (usuarioExiste && perfilEncontrado) {
-      if (usuarioValorado == false) {
-        console.log('NOOO esxiste valoracoon')
-        const nuevaValoracion = new  Valoraciones({
+      if (!usuarioValorado) {
+        await Valoraciones.create({
           "usuario": usuario,
           "perfil": {
             [perfil]: [
@@ -926,57 +935,81 @@ async function añadirNuevaValoracion(pelicula, valoracion, usuario, perfil) {
             ]
           }
         });
-        await nuevaValoracion.save();
-        console.log("Se ha añadido una nueva valoración de la película " + pelicula)
+        console.log("Se ha añadido una nueva valoración de la película " + pelicula);
       } else {
-        const count = await Valoraciones.countDocuments({
-          "usuario": usuario,
-          [`perfil.${perfil}.pelicula`]: pelicula
-        });
-
-        if (count == 0) {
-          await Valoraciones.updateOne(
-            {
-              "usuario": usuario
-            },
-            {
-              $push: {
-                [`perfil.${perfil}`]: {
-                  "pelicula": pelicula,
-                  "valoracion": valoracion
-                }
-              }
-            }
-          );
-        } else {
+        if (!perfilEncontrado) {
+          console.log('El perfil no existe, creando nuevo perfil');
+          console.log('----------------' + usuario + '  *******    ' + perfil);
 
           await Valoraciones.updateOne(
-            {
-              "usuario": usuario,
-              [`perfil.${perfil}.pelicula`]: pelicula  
-            },
+            { "usuario": usuario },
             {
               $set: {
-                [`perfil.${perfil}.$[elem].valoracion`]: valoracion 
+                [`perfil.${perfil}`]: [
+                  {
+                    "pelicula": pelicula,
+                    "valoracion": valoracion
+                  }
+                ]
               }
-            },
-            {
-              arrayFilters: [{ "elem.pelicula": pelicula }] 
             }
           );
+          console.log("Se ha añadido un nuevo perfil y la valoración de la película " + pelicula);
+        } else {
+          console.log('El perfil ya existe');
+          console.log('----------------' + usuario + '  *******    ' + perfil);
 
+          const count = await Valoraciones.countDocuments({
+            "usuario": usuario,
+            [`perfil.${perfil}.pelicula`]: pelicula
+          });
+
+          if (count == 0) {
+            console.log('----------------' + usuario + '  *******    ' + perfil);
+
+            await Valoraciones.updateOne(
+              {
+                "usuario": usuario
+              },
+              {
+                $push: {
+                  [`perfil.${perfil}`]: {
+                    "pelicula": pelicula,
+                    "valoracion": valoracion
+                  }
+                }
+              }
+            );
+            console.log("Se ha añadido una nueva valoración de la película " + pelicula + " al perfil existente");
+          } else {
+            console.log('----------------' + usuario + '  *******    ' + perfil);
+
+            await Valoraciones.updateOne(
+              {
+                "usuario": usuario,
+                [`perfil.${perfil}.pelicula`]: pelicula // Encuentra el documento con el nombre de la película en el perfil específico
+              },
+              {
+                $set: {
+                  [`perfil.${perfil}.$[elem].valoracion`]: valoracion // Modifica la valoración de la película
+                }
+              },
+              {
+                arrayFilters: [{ "elem.pelicula": pelicula }] // Filtra el documento que contiene la película específica
+              }
+            );
+            console.log("Se ha actualizado tu valoración de la película: " + pelicula);
+          }
         }
-
-        console.log("Se actualizado tu valoracion de la película: " + pelicula)
-
       }
     } else {
-      throw new Error('Usuario o Perfil no encontrado');
+      throw new Error('Usuario no encontrado');
     }
   } catch (error) {
     console.error('Error al añadir una valoración:', error);
-  };
+  }
 }
+
 
 async function añadirNuevoComenatrio(pelicula, comentario, usuario, perfil) {
   try {
@@ -1007,7 +1040,7 @@ async function añadirNuevoComenatrio(pelicula, comentario, usuario, perfil) {
         });
 
         if (count == 0) {
-          await collection.updateOne(
+          await Valoraciones.updateOne(
             {
               "usuario": usuario
             },
@@ -1080,8 +1113,6 @@ async function obtenerTodosLosComentarios(peliculaBuscada) {
     console.error('Error al añadir un comentario:', error);
   };
 }
-
-
 
 
 async function ObtenerInformacionPeliculasRecomendaciones() {

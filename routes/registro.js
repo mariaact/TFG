@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var database = require('../consultasDB');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const ethers = require('ethers');
 
 
 /* GET home page. */
@@ -29,7 +32,12 @@ router.post("/registro", async function (req, res, next) {
   else {
     const usuarioExistente = await database.comprobarnombreUsuario(nombre)
     if(!usuarioExistente){
-     const resultado = await database.registrarUsuario(nombre, pass, email);
+
+      // Crea la billetera
+      const wallet = ethers.Wallet.createRandom();
+      console.log(wallet);
+
+     const resultado = await database.registrarUsuario(nombre, pass, email, wallet);
       if (!resultado){
         direccion = 'registro';
       }else{

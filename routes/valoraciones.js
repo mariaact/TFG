@@ -86,7 +86,7 @@ router.post('/valoraciones', async function (req, res, next) {
     console.log('info de los usuarios  ' + user.direccionWallet)
 
     // Calcula el incentivo basado en la valoración
-    const incentive = ethers.utils.parseEther((1.01).toString());
+    const incentive = ethers.utils.parseEther((0.01).toString());
     
 
     console.log(user.direccionWallet)
@@ -100,6 +100,9 @@ router.post('/valoraciones', async function (req, res, next) {
 
       console.log(tx)
       console.log(wallet)
+
+      const initialBalance = await wallet.provider.getBalance(user.direccionWallet);
+
 
       // Enviar la transacción
       const transaction = await wallet.sendTransaction(tx);
@@ -116,7 +119,6 @@ router.post('/valoraciones', async function (req, res, next) {
         console.log('La transacción falló');
       }
 
-      const initialBalance = await wallet.provider.getBalance(user.direccionWallet);
       const finalBalance = await wallet.provider.getBalance(user.direccionWallet);
 
       console.log('Balance inicial:', ethers.utils.formatEther(initialBalance));

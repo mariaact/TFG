@@ -1,6 +1,6 @@
 .contenedorResenas {
   position: absolute; 
-  top: 60%; 
+  top: 55vh; 
   left: 50%;
   z-index: 9999; 
   margin-top: 0vh; 

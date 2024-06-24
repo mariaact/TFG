@@ -20,7 +20,7 @@ mongoose.connect(dbURI, {
   //getMovieCertifications();
 
   //actualizarInfoPeliculas();
-  resultadoTituloGeneroDescripcionDeTodasPeliculas();
+  //resultadoTituloGeneroDescripcionDeTodasPeliculas();
 
 
 }).catch((error) => {
@@ -300,12 +300,12 @@ async function resultadoTituloGeneroDescripcionDeTodasPeliculas() {
     mongoose.connection.close();
   }
 }
-
+/*
 async function obtenerTodosLosGeneros() {
   //const collection = db.collection('generos');
   const generos = await Generos.find().exec();
   return generos;
-}
+}*/
 
 async function ObtenerTituloGeneroDescripcionDeTodasPeliculas() {
   // const collection = db.collection('peliculas');

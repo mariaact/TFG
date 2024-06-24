@@ -156,7 +156,7 @@ body {
 }
 
 .logo {
-    font-size: 35px;
+    font-size: 3.5vh;
     color: #FFFFFF;
     top: 4vh;
     position: absolute;
@@ -543,13 +543,13 @@ a {
     .ventana-pequena {
 
         position: fixed;
-        top: 10vh;
+        top: 12vh;
         right: 10vh;
         z-index: 9999;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: auto;
+        width: 25vh;
         height: auto;
         border-radius: 5px;
         left: 78%;
@@ -558,6 +558,8 @@ a {
         font-family: Arial, Helvetica, sans-serif;
         background-color: rgba(0, 0, 0, 0.4);
         display: none;
+        padding-left: 2vh;
+        padding-right: 2vh;
     }
 
     .menu-ventana-pequena li  {
@@ -591,10 +593,10 @@ a {
 
     .icono-ventana-pequena img {
         display: block;
-        height: 5vh;
+        height: 6vh;
         background-color: white;
         border-radius: 20vh;
-        width: 5vh;
+        width: 6vh;
     }
 
     .menu-ventana-pequena li a i {

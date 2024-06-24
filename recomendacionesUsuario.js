@@ -133,12 +133,20 @@ async function recomendarTop10Peliculas() {
     return peliculas.slice(0, 10);
 }
 
+let recomendaciones = []
 async function principal(usuario, perfil) {
     const catalogoPeliculas = await database.ObtenerTituloGeneroDescripcionDeTodasPeliculas();
-    const perfilUsuario = await database.analisisSentimiento(usuario, perfil);
-    const recomendaciones = recomendarPeliculasSegunGustos(usuario, perfilUsuario, catalogoPeliculas);
-    console.log('Recomendaciones de películas para', usuario + ':', recomendaciones);
-    
+    console.log(usuario + perfil + ' ----')
+    console.log(perfil !== undefined && usuario !== undefined)
+    if(perfil !== undefined && usuario !== undefined){
+        const perfilUsuario = await database.analisisSentimiento(usuario, perfil);
+        recomendaciones = recomendarPeliculasSegunGustos(usuario, perfilUsuario, catalogoPeliculas);
+        console.log('Recomendaciones de películas para', usuario + ':', recomendaciones);
+        
+    }else{
+        recomendaciones = []
+    }
+   
     return recomendaciones;
 }
 
@@ -150,7 +158,7 @@ async function principalTop10() {
 
 //principalTop10();
 
-principal('lucia')
+//principal('maria', 'maria')
 
 module.exports = { principal, principalTop10 };
 

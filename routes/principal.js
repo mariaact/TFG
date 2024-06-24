@@ -51,6 +51,7 @@ router.get('/principal', async function (req, res, next) {
       lista = await database.listaPeliculasUsuario(usuarioCuenta, perfilCuenta);
       if(lista.length != 0){
         peliculasQueQuizasTeGusten = await recomendacionesUser.principal(usuarioCuenta, perfilCuenta);
+        console.log('-------*****************/////////////' +usuarioCuenta + perfilCuenta + peliculasQueQuizasTeGusten[0])
         infoPeliculasQueQuizasTeGusten = JSON.stringify(peliculasQueQuizasTeGusten);
       }
     }
@@ -97,6 +98,7 @@ router.get('/principal', async function (req, res, next) {
 
         console.log(peliculas.length + '   ****   ' + peliculasComedia.length)
         if(lista.length != 0){
+          console.log(peliculasQueQuizasTeGusten)
           html0 += '<div class="box-0"><div class="content"><img class="imagenPelicula" id="img0-'+idCont+'" src="https://image.tmdb.org/t/p/original' + peliculasQueQuizasTeGusten[i].imagen + ' " alt=""> ' +
           '<h3 id="h30-'+idCont+'">' + peliculasQueQuizasTeGusten[i].titulo + '</h3> <a id="enlacePelicula0-'+idCont+'" href="/peliculaDetallada?valor=' + peliculasQueQuizasTeGusten[i].titulo + '"> ver mas </a>  </div>   </div>  '  
         }
