@@ -3,23 +3,12 @@ var router = express.Router();
 var database = require('../consultasDB');
 var algoritmoNaiveBayes = require('../algoritmoNaiveBayes');
 
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const { MongoClient } = require('mongodb');
-const { use } = require('./catalogo');
-
-
-const dbURI = 'mongodb://127.0.0.1:27017/Series';
-const dbName = 'Series'
-const client = new MongoClient(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
-const db = client.db(dbName);
 
 router.get('/peliculaDetallada', async function (req, res, next) {
 
   const nombrePelicula = req.query.valor;
   const perfil = req.session.perfiles
   const user = req.session.usuario
-  console.log('*////////*///////   ' + nombrePelicula  + '----' +perfil+ '-----' + user)
 
   const nombrePerfiles = await database.obtenerPerfilesDeUnUsuario(user);
   const posicionPerfil = nombrePerfiles.indexOf(perfil);
@@ -37,7 +26,6 @@ router.get('/peliculaDetallada', async function (req, res, next) {
 
   const recomendaciones = await algoritmoNaiveBayes.resultado(nombrePelicula);
   let html = '';
-  console.log('Perdil dentro dde peli detalles    '+ perfil)
 
   for (var i = 1; i <= 5; i++) {
     html += '<div class="box-1"> <div class="content"> <img src="https://image.tmdb.org/t/p/original' + recomendaciones[i].imagen + '" alt=""> <h3>' + recomendaciones[i].titulo + '</h3><a href="/peliculaDetallada?valor=' + recomendaciones[i].titulo + '"> ver mas </a> </div>   </div>  '
@@ -163,7 +151,7 @@ router.get('/cargarMasPeliculasSimilares', async function (req, res, next) {
     cargarMas = '<div class="load-more"  class="btn-1" id="cargarPeliculas" style="display:none"> <a href="/cargarMasPeliculasSimilares?valor=' + nombrePelicula + '"> ver mas </a> </div>';
   }
 
-  res.render('peliculaDetallada', { nombrePelicula, fechaLanzamiento, duracion, review, imageUrl, reparto, generos, pelicula, user, comprobarPeliculaLista, perfil, posicionPerfil, html, cargarMas });
+  res.render('peliculaDetallada', { titulo: nombrePelicula, fechaLanzamiento, duracion, review, imageUrl, reparto, generos, pelicula, user, comprobarPeliculaLista, perfil, posicionPerfil, html, cargarMas });
 
 });
 

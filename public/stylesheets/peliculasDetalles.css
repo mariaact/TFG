@@ -45,6 +45,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin: 0;
+    padding-left: 50vh;
 }
 
 .logo {

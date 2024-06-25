@@ -391,8 +391,7 @@ hr {
 }
 
 .content h3 {
-    font-size: vh;
-    margin-bottom: 10px;
+    margin-bottom: 6vh;
     text-align: center;
     height: 10vh;
     font-size: 3.5vh;
