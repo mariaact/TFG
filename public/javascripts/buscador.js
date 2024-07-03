@@ -15,10 +15,8 @@ fetch('/informacionListaPeliculasBuscador')
         return response.json();
     })
     .then(data => {
-        console.log('Datos obtenidos del get peliculas buscador:', data);
         inputSearch.onkeyup = e => {
             let userData = e.target.value;
-            console.log(userData)
             let emptyArray = [];
 
             if (userData) {

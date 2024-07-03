@@ -161,7 +161,6 @@ async function cambiarUsuarioEmailPerfil(valorNuevo, valorActual, parametro) {
     if (validarEmail(valorNuevo).length != 0) {
       return validarEmail(valorNuevo);
     } else {
-      console.log('parametro: ' + parametro + 'valorActual: ' + valorActual + 'valorNuevo ' + valorNuevo)
       const nombreUsuarioCambiado = await Usuarios.updateOne(
         {
           "email": valorActual
@@ -404,10 +403,8 @@ async function comprobarExistenciausuario(usuario) {
 
 async function comprobarExistenciaPerfil(usuario, perfil) {
   const usuarioExistente = await comprobarExistenciausuario(usuario);
-  console.log(usuarioExistente)
   if (usuarioExistente != 'Usuario no encontrado') {
     //const collection = db.collection('Users');
-    console.log(perfil)
     return await Usuarios.findOne({ "perfiles.nombre": perfil })
       .then(perfilEncontrado => {
         if (!perfilEncontrado) {
@@ -430,7 +427,6 @@ async function añadirNuevoPerfil(usuario, perfil) {
     //const collection = db.collection('Users');
     const usuarioID = await obtenerIDUsuario(usuario);
     if(usuarioID != 'Usuario no encontrado'){
-      console.log(usuarioID + '***************')
       const nuevoPerfil = {
         nombre: perfil,
         iconUsuario: '/images/userIcon.png',
@@ -628,8 +624,6 @@ async function ObtenerPeliculasInfantiles() {
 async function ObtenerPeliculasInfantilesSegunElGenero(genero) {
   //const collection = db.collection('peliculas');
   const generoID = await obtenerIDGenero(genero);
-  console.log(generoID + '')
-  console.log(typeof (generoID))
   const peliculasInfantiles = await Pelicula.find({ certificacion: 'APTA', genre_ids: parseInt(generoID) });
 
   return peliculasInfantiles;
@@ -709,18 +703,27 @@ async function obtenerLasCincoPeliculasMasNuevas() {
   var mes = ('0' + (fecha.getMonth() + 1)).slice(-2);
   var dia = ('0' + fecha.getDate()).slice(-2); 
   var fechaActual = ano + '-' + mes + '-' + dia;
-  console.log(fechaActual)
   const peliculasOrdenacionFecha = await Pelicula.find({ release_date: { $lte: fechaActual } }).sort({ release_date: - 1 }).limit(5);
 
   return peliculasOrdenacionFecha;
 }
+
+async function comprobarSiExistePelicula(nombrePelicula) {
+  // const collection = db.collection('Users');
+   const peliculaExiste = await Pelicula.findOne({ title: nombrePelicula });
+   if (peliculaExiste) {
+      return peliculaExiste; 
+   } else {
+     return  false;
+   }
+ }
+
 
 async function mostrarTodasLasValoraciones(usuario, nombrePerfil) {
   //const collection = db.collection('valoraciones');
   //const usuarioResultado = await collection.findOne({ 'usuario': 'maria' }, { projection: { 'perfil.maria': 1 } });
 
   const usuarioResultado = await Valoraciones.findOne({ usuario: usuario }, { [`perfil.${nombrePerfil}`]: 1 }); 
-  console.log(usuarioResultado)
   if (!usuarioResultado) {
   return false;
   }
@@ -745,16 +748,12 @@ async function todasLasValoraciones() {
     //const nombrePerfiles = new Set();
   const nombrePerfiles = new Map();
 
-  console.log(valoraciones)
-
   for (const valoracion of valoraciones) {
     const perfilObj = valoracion.perfil.toObject(); // Convierte a objeto plano
     const perfiles = Object.keys(perfilObj); // Obtiene un array de las claves del objeto
     for (let i = 0; i < perfiles.length; i++) {
-      console.log(perfiles[i] + "***************");
       if (!nombrePerfiles.has(perfiles[i])) {
         nombrePerfiles.set(valoracion.usuario, perfiles[i])
-        console.log(nombrePerfiles + "////////")
       }
     }
   }
@@ -762,9 +761,7 @@ async function todasLasValoraciones() {
   let final = [];
 
   for (const [usuario, perfil] of nombrePerfiles) {
-    console.log(`Usuario: ${usuario}, Perfil: ${perfil}`);
     const resultado = await mostrarTodasLasValoraciones(usuario, perfil);
-
     final = final.concat(resultado);
   }
 
@@ -920,8 +917,6 @@ async function añadirNuevaValoracion(pelicula, valoracion, usuario, perfil) {
     const usuarioValorado = await comprobarExistenciausuarioValoraciones(usuario);
     const perfilEncontrado = await comprobarExistenciaPerfil(usuario, perfil);
 
-    console.log(usuarioExiste + '  *******    ' + perfilEncontrado);
-
     if (usuarioExiste && perfilEncontrado) {
       if (!usuarioValorado) {
         await Valoraciones.create({
@@ -935,11 +930,9 @@ async function añadirNuevaValoracion(pelicula, valoracion, usuario, perfil) {
             ]
           }
         });
-        console.log("Se ha añadido una nueva valoración de la película " + pelicula);
+        console.log("Se ha añadido una nueva valoración de la película ");
       } else {
         if (!perfilEncontrado) {
-          console.log('El perfil no existe, creando nuevo perfil');
-          console.log('----------------' + usuario + '  *******    ' + perfil);
 
           await Valoraciones.updateOne(
             { "usuario": usuario },
@@ -954,19 +947,15 @@ async function añadirNuevaValoracion(pelicula, valoracion, usuario, perfil) {
               }
             }
           );
-          console.log("Se ha añadido un nuevo perfil y la valoración de la película " + pelicula);
+          console.log("Se ha añadido un nuevo perfil y la valoración de la película ");
         } else {
           console.log('El perfil ya existe');
-          console.log('----------------' + usuario + '  *******    ' + perfil);
-
           const count = await Valoraciones.countDocuments({
             "usuario": usuario,
             [`perfil.${perfil}.pelicula`]: pelicula
           });
 
           if (count == 0) {
-            console.log('----------------' + usuario + '  *******    ' + perfil);
-
             await Valoraciones.updateOne(
               {
                 "usuario": usuario
@@ -982,8 +971,6 @@ async function añadirNuevaValoracion(pelicula, valoracion, usuario, perfil) {
             );
             console.log("Se ha añadido una nueva valoración de la película " + pelicula + " al perfil existente");
           } else {
-            console.log('----------------' + usuario + '  *******    ' + perfil);
-
             await Valoraciones.updateOne(
               {
                 "usuario": usuario,
@@ -1136,4 +1123,4 @@ async function borrarUsuario(nombreUsuario) {
 
 
 
-module.exports = { borrarDatosUsuario, borrarPerfil, obtenerLasCincoPeliculasMasNuevas, todasLasValoraciones, obtenerTodosLosNombresGeneros, obtenerTitulosPeliculasInfantiles, cambiarUsuarioEmailPerfil, obtenerTodaLaInformacionUsuario, analisisSentimiento, mostrarTodasLasValoraciones, cambiarContrasenna, comprobarnombreUsuario, registrarUsuario, comprobarUsuario, obtenerTodosLosComentarios, añadirNuevoComenatrio, añadirNuevaValoracion, obtenerGenerosPeliculasInfantiles, ObtenerPeliculasMasPopularesInfantiles, ObtenerPeliculasInfantiles, ObtenerPeliculasInfantilesSegunElGenero, ObtenerTituloGeneroDescripcionDeTodasPeliculas, ObtenerPeliculaDeLasRecomendaciones, ObtenerInformacionPeliculasRecomendaciones, comprobarExistenciausuario, agregarPeliculaListaPerfil, eliminarPeliculaListaPerfil, obtenerPerfilesDeUnUsuario, añadirNuevoPerfil, obtenerTitulosPeliculas, obtenerInfoPeliculasGenero, peliculasMasVistas, obtenerTodosLosGeneros, peliculaDetalles, obtenerNombreGenero, comprobarPeliculaLista, listaPeliculasUsuario };
+module.exports = { comprobarSiExistePelicula, borrarDatosUsuario, borrarPerfil, obtenerLasCincoPeliculasMasNuevas, todasLasValoraciones, obtenerTodosLosNombresGeneros, obtenerTitulosPeliculasInfantiles, cambiarUsuarioEmailPerfil, obtenerTodaLaInformacionUsuario, analisisSentimiento, mostrarTodasLasValoraciones, cambiarContrasenna, comprobarnombreUsuario, registrarUsuario, comprobarUsuario, obtenerTodosLosComentarios, añadirNuevoComenatrio, añadirNuevaValoracion, obtenerGenerosPeliculasInfantiles, ObtenerPeliculasMasPopularesInfantiles, ObtenerPeliculasInfantiles, ObtenerPeliculasInfantilesSegunElGenero, ObtenerTituloGeneroDescripcionDeTodasPeliculas, ObtenerPeliculaDeLasRecomendaciones, ObtenerInformacionPeliculasRecomendaciones, comprobarExistenciausuario, agregarPeliculaListaPerfil, eliminarPeliculaListaPerfil, obtenerPerfilesDeUnUsuario, añadirNuevoPerfil, obtenerTitulosPeliculas, obtenerInfoPeliculasGenero, peliculasMasVistas, obtenerTodosLosGeneros, peliculaDetalles, obtenerNombreGenero, comprobarPeliculaLista, listaPeliculasUsuario };

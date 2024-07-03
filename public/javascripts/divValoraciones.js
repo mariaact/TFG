@@ -1,10 +1,7 @@
 const manoArriba = document.getElementById('manoArriba');
 let activado = false;
 
-console.log('divValoracioneeessss')
-
 manoArriba.addEventListener('click', function(){
-  console.log('divValoracioneeessss  iiff')
 
   if(activado){
     document.querySelector('.contenedorResenas1').style.display = 'none';

@@ -111,14 +111,14 @@ async function resultado(nombrePelicula) {
     return similarMoviesInfo;
 }
 
-
+/*
 resultado('Wonka')
   .then(resultado => {
     console.log('Resultado:', resultado);
   })
   .catch(error => {
     console.error('Error al obtener información de películas:', error);
-  });
+  });*/
 
 
 

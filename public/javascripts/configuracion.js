@@ -13,7 +13,6 @@ function mostrar(boton) {
                 return false;
             } else {
                 resultado = inputValue;
-                console.log('value' + inputValue)
             }
             return inputValue;
         }

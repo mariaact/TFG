@@ -46,8 +46,13 @@ body {
     align-items: center;
     justify-content: space-between;
     margin: 0;
-    padding-left: 50vh;
+    padding-left: 20vh;
 }
+
+.navbar {
+    right: 20%;
+    position: absolute;
+  }
 
 .logo {
     font-size: 35px;

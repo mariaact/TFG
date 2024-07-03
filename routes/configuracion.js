@@ -11,19 +11,15 @@ router.get('/configuracion', async function (req, res, next) {
 
     let usuario = req.session.usuario;
     let perfil = req.session.perfiles;
+
     const nombrePerfiles = await database.obtenerPerfilesDeUnUsuario(req.session.usuario);
     const posicionPerfil = nombrePerfiles.indexOf(req.session.perfiles);
-
-    console.log('--------------------------------------------------------------------------------------------------------------------------')
-
     const infoUsuario = await database.obtenerTodaLaInformacionUsuario(req.session.usuario);
 
     let result = resultadoHTMLTabla(infoUsuario, usuario, perfil);
 
-
     let mensaje ='';
     let icon = '';
-
 
 
     res.render('configuracion', { content: result, perfil, usuario, posicionPerfil, showAlert: false, mensaje, icon  });
@@ -47,7 +43,6 @@ router.get('/modificarconfiguracionUsuario', async function (req, res, next) {
 
     if(parametroUsuario == 'nombre'){
         cambiarInfo = await database.cambiarUsuarioEmailPerfil(valorUsuario, usuario, parametroUsuario);
-        console.log('-----  '+cambiarInfo)
         const result = mensajeAlert(cambiarInfo);
         mensaje = result[0];
         icon = result[1];
@@ -58,7 +53,6 @@ router.get('/modificarconfiguracionUsuario', async function (req, res, next) {
     }
     if(parametroUsuario == 'contraseña'){
         cambiarInfo = await database.cambiarContrasenna(usuario, valorUsuario);
-        console.log('-----  '+cambiarInfo)
         const result = mensajeAlert(cambiarInfo);
         mensaje = result[0];
         icon = result[1];
@@ -66,7 +60,6 @@ router.get('/modificarconfiguracionUsuario', async function (req, res, next) {
     }
     if(parametroUsuario == 'email'){
         cambiarInfo = await database.cambiarUsuarioEmailPerfil(valorUsuario, email, parametroUsuario);
-        console.log('-----  '+cambiarInfo)
         const result = mensajeAlert(cambiarInfo);
         mensaje = result[0];
         icon = result[1];
@@ -75,20 +68,15 @@ router.get('/modificarconfiguracionUsuario', async function (req, res, next) {
     if(parametroUsuario == 'perfil'){
         cambiarInfo = await database.cambiarUsuarioEmailPerfil(valorUsuario, perfil, parametroUsuario);
         req.session.perfiles = valorUsuario;
-        console.log('-----  '+cambiarInfo)
         const result = mensajeAlert(cambiarInfo);
         mensaje = result[0];
         icon = result[1];
         alert = result[2];
-
     }    
 
-    console.log(' usuario sesiooon  ' + req.session.usuario)
     const infoUsuario = await database.obtenerTodaLaInformacionUsuario(req.session.usuario);
 
-
     let result = resultadoHTMLTabla(infoUsuario, usuario, perfil);
-
 
     res.render("configuracion",{
         content: result,
@@ -102,7 +90,6 @@ router.get('/modificarconfiguracionUsuario', async function (req, res, next) {
 
 router.get('/borrarUsuario', async function (req, res, next) {
     let usuario = req.query.nombre;
-    console.log('esty en el get borrar user   '+ usuario)
     await database.borrarDatosUsuario(usuario)
     res.redirect('/')
 });
@@ -111,9 +98,7 @@ router.get('/borrarUsuario', async function (req, res, next) {
 router.get('/borrarPerfil', async function (req, res, next) {
     let perfil = req.query.nombre;
     let usuario = req.session.usuario;
-
-    console.log('esty en el get borrar perf   '+ perfil)
-     await database.borrarPerfil(usuario, perfil)
+    await database.borrarPerfil(usuario, perfil)
     res.redirect('configuracion')
 });
 
@@ -125,7 +110,6 @@ function resultadoHTMLTabla(infoUsuario, usuario, perfil){
     "<tr><td>Email</td><td>"+infoUsuario.email +"</td><td><button class='fas fa-edit' onclick='mostrar(\"email\")'></button></td><td></td></tr>";
 
     infoUsuario.perfiles.forEach(perfiles => {
-        console.log('=================   ' + perfiles.nombre)
         if(perfiles.nombre != 'Kids'){
             result += "<tr><td>Nombre de los perfiles</td><td>"+ perfiles.nombre +" </td><td><button class='fas fa-edit' onclick='mostrar(\"perfil\")'></button></td><td><a class='borrar' href='/borrarPerfil?nombre="+perfil+"'>&#x274C;</a></td></tr>";
         }
@@ -137,9 +121,7 @@ function resultadoHTMLTabla(infoUsuario, usuario, perfil){
 
 
 function mensajeAlert(cambiarInfo){
-    console.log('estoy en la funcioon y el valor de cambiar info ees    ' + cambiarInfo)
     if(cambiarInfo == true){
-        console.log('¡¡¡¡¡')
         mensaje = 'Operación realizada con éxito'
         icon = 'success'
         alert = true;

@@ -64,16 +64,23 @@ function toggleMostrarContrasenaOlvidad1() {
 
 
 function reiniciarCampos() {
-  document.getElementById("password").value = "";
-  document.getElementById("username").value = "";
- // document.getElementById("usernameRegistro").value = "";
-  //document.getElementById("emailRegistro").value = "";
- // document.getElementById("passwordRegistro").value = "";
 
-  document.getElementById("emailContrasena").value = "";
-  document.getElementById("nuevaContrasena").value = "";
-  document.getElementById("nuevaContrasena1").value = "";
+  if (document.getElementById("password") != null) {
+    document.getElementById("password").value = "";
+  }
+  if (document.getElementById("username") != null) {
+    document.getElementById("username").value = "";
+  }
 
+  if (document.getElementById("emailContrasena") != null) {
+    document.getElementById("emailContrasena").value = "";
+  }
+  if (document.getElementById("nuevaContrasena") != null) {
+    document.getElementById("nuevaContrasena").value = "";
+  }
+  if (document.getElementById("nuevaContrasena1") != null) {
+    document.getElementById("nuevaContrasena1").value = "";
+  }
 }
 
 window.onload = reiniciarCampos;
@@ -82,21 +89,23 @@ document.addEventListener('DOMContentLoaded', function () {
   var btnMostrarDiv = document.querySelector('.btn-1');
   var divSobresaliente = document.getElementById('div-sobresaliente');
 
-  btnMostrarDiv.addEventListener('click', function (event) {
-    event.preventDefault();
-    if (divSobresaliente.style.display === 'block') {
-      divSobresaliente.style.display = 'none';
-      document.querySelector(".imagen-carrusel").style.opacity = "1";
-    } else {
-      reiniciarCampos();
-      document.querySelector(".imagen-carrusel").style.opacity = "0.1";
-      divSobresaliente.style.display = 'block';
-    }
-  });
+  if (btnMostrarDiv != null) {
+    btnMostrarDiv.addEventListener('click', function (event) {
+      event.preventDefault();
+      if (divSobresaliente.style.display === 'block') {
+        divSobresaliente.style.display = 'none';
+        document.querySelector(".imagen-carrusel").style.opacity = "1";
+      } else {
+        reiniciarCampos();
+        document.querySelector(".imagen-carrusel").style.opacity = "0.1";
+        divSobresaliente.style.display = 'block';
+      }
+    });
 
+  }
 
   var formulario1 = document.getElementById("div-sobresaliente");
- // var formulario2 = document.getElementById("registro");
+  // var formulario2 = document.getElementById("registro");
   var formulario3 = document.getElementById("cambiarContrasena");
   //var enlace = document.getElementById("enlaceCuenta");
   //var enlace1 = document.getElementById("enlaceCuentaExistente");
@@ -104,23 +113,23 @@ document.addEventListener('DOMContentLoaded', function () {
   var volverInicioSesion = document.getElementById("enlaceCuentaExistente2");
 
 
-/*
-  //----------de iniciar sesion a cambair contrasena -------------------
-  cambiarContrasena.addEventListener('click', function (event) {
-    event.preventDefault();
-    reiniciarCampos();
-    formulario1.style.display = "none";
-    formulario3.style.display = "block";
-  });
-
-  //---------------- de olvidar la contrseña a iniciar sesion --------------
-  volverInicioSesion.addEventListener('click', function (event) {
-    event.preventDefault();
-    reiniciarCampos();
-    formulario1.style.display = "block";
-    formulario3.style.display = "none";
-  });
-*/
+  /*
+    //----------de iniciar sesion a cambair contrasena -------------------
+    cambiarContrasena.addEventListener('click', function (event) {
+      event.preventDefault();
+      reiniciarCampos();
+      formulario1.style.display = "none";
+      formulario3.style.display = "block";
+    });
+  
+    //---------------- de olvidar la contrseña a iniciar sesion --------------
+    volverInicioSesion.addEventListener('click', function (event) {
+      event.preventDefault();
+      reiniciarCampos();
+      formulario1.style.display = "block";
+      formulario3.style.display = "none";
+    });
+  */
 
 
 });

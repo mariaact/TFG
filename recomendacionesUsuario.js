@@ -136,12 +136,10 @@ async function recomendarTop10Peliculas() {
 let recomendaciones = []
 async function principal(usuario, perfil) {
     const catalogoPeliculas = await database.ObtenerTituloGeneroDescripcionDeTodasPeliculas();
-    console.log(usuario + perfil + ' ----')
-    console.log(perfil !== undefined && usuario !== undefined)
     if(perfil !== undefined && usuario !== undefined){
         const perfilUsuario = await database.analisisSentimiento(usuario, perfil);
         recomendaciones = recomendarPeliculasSegunGustos(usuario, perfilUsuario, catalogoPeliculas);
-        console.log('Recomendaciones de películas para', usuario + ':', recomendaciones);
+       // console.log('Recomendaciones de películas para', usuario + ':', recomendaciones);
         
     }else{
         recomendaciones = []

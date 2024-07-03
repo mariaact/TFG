@@ -13,7 +13,6 @@ window.addEventListener("scroll", function(){
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-  console.log('dentro del boton usuariooo')
     var btnMostrarDivUser = document.querySelector('.btn-User');
     var divSobresaliente = document.getElementById('navbarUsuario');
 
@@ -23,10 +22,8 @@ document.addEventListener('DOMContentLoaded', function () {
     btnMostrarMenuVentanaPequena.addEventListener('click', function (event) {
       event.preventDefault(); 
       if (divMostrarMenu.style.display === 'block') {
-        console.log('estoy en if usuario')
         divMostrarMenu.style.display = 'none'; 
       } else {
-        console.log('estoy en else usuario')
         divMostrarMenu.style.display = 'block'; 
         divSobresaliente.style.display = 'none'; 
       }
@@ -36,11 +33,8 @@ document.addEventListener('DOMContentLoaded', function () {
     btnMostrarDivUser.addEventListener('click', function (event) {
       event.preventDefault(); 
       if (divSobresaliente.style.display === 'block') {
-        console.log('estoy en if usuario')
         divSobresaliente.style.display = 'none'; 
       } else {
-        console.log('estoy en else usuario')
-
         divSobresaliente.style.display = 'block'; 
         divMostrarMenu.style.display = 'none'; 
       }

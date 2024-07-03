@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const session = require('express-session');
+const cors = require('cors');
 
 var administracionUsuarios = require('./routes/configuracion')
 var indexRouter = require('./routes/logIn');
@@ -45,6 +46,13 @@ app.use(function(req, res, next){
   res.locals.message = "";
   if (error) res.locals.error = `<p>${error}</p>`;
   if (message) res.locals.message = `<p>${message}</p>`;
+  next();
+});
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*'); // Permite todas las fuentes, puedes restringir a tu dominio específico
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
 

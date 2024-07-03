@@ -4,12 +4,14 @@ var database = require('../consultasDB');
 var algoritmoNaiveBayes = require('../algoritmoNaiveBayes');
 
 
+
 router.get('/peliculaDetallada', async function (req, res, next) {
 
-  const nombrePelicula = req.query.valor;
   const perfil = req.session.perfiles
   const user = req.session.usuario
 
+  const nombrePelicula = req.query.valor;
+ 
   const nombrePerfiles = await database.obtenerPerfilesDeUnUsuario(user);
   const posicionPerfil = nombrePerfiles.indexOf(perfil);
   const peliculaDetalles = await database.peliculaDetalles(nombrePelicula);
@@ -50,7 +52,7 @@ router.post('/enviar-datos', async (req, res) => {
   const generos = await database.obtenerNombreGenero(peliculaDetalles.genre_ids);
   const comprobarPeliculaLista = await database.comprobarPeliculaLista(nombreUsuario, perfil, pelicula);
   
-  console.log('*////////*///////   '   + '----' +perfil+ '-----' + nombreUsuario)
+  console.log('*////////*///////   '   + '----' +perfil+ '-----' + nombreUsuario + req.body.Corazon)
 
   try {
     if (req.body.Corazon === false) {
@@ -178,7 +180,7 @@ router.get('/guardarValoraciones', async function (req, res, next) {
   const nombrePerfiles = await database.obtenerPerfilesDeUnUsuario(req.session.usuario);
   const posicionPerfil = nombrePerfiles.indexOf(req.session.perfiles);
 
-  console.log('Valoracion ----   '+ nombrePelicula+ valoracion+ usuario+ perfil + valoracion + '  -----*  '+ nombrePelicula);
+ // console.log('Valoracion ----   '+ nombrePelicula+ valoracion+ usuario+ perfil + valoracion + '  -----*  '+ nombrePelicula);
   
 
   //pelicula, valoracion, comentario, usuario, perfil

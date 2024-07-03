@@ -9,12 +9,12 @@ router.get('/paginaUsuarios', async function (req, res, next) {
 
     const user = req.session.user
     const nombrePerfiles = await database.obtenerPerfilesDeUnUsuario(user);
-    console.log('---------------------------------------------')
-    console.log(nombrePerfiles.length)
-    console.log(nombrePerfiles)
-    console.log(nombrePerfiles[0] + nombrePerfiles[1])
+  //  console.log('---------------------------------------------')
+  //  console.log(nombrePerfiles.length)
+  //  console.log(nombrePerfiles)
+   // console.log(nombrePerfiles[0] + nombrePerfiles[1])
     const numeroPerfiles = nombrePerfiles.length;
-    console.log('---------------------------------------------')
+   // console.log('---------------------------------------------')
 
 
     res.render('paginaUsuarios', { user, numeroPerfiles, nombrePerfiles});

@@ -1,17 +1,13 @@
 let corazon = false;
 
 function toggleHeart(button, pelicula, user, perfil) {
-  console.log('estoy en el script corazon detalles  ' +button +pelicula +user+ perfil)
 
   button.querySelector('.heart-icon').classList.toggle('active');
   var heartIcon = button.querySelector('.heart-icon');
-  console.log('esty en corazon y el user es ' + user)
 
   if (heartIcon.classList.contains('active')) {
-    console.log('esta activo');
     corazon = true;
     const dataToSend = { 'Pelicula': pelicula, 'Usuario': user, 'Corazon': corazon, 'Perfil': perfil}
-
   fetch('http://localhost:3000/enviar-datos', {
     method: 'POST',
     headers: {
@@ -33,7 +29,6 @@ function toggleHeart(button, pelicula, user, perfil) {
     });
 
   } else {
-    console.log('esta desactivado')
     corazon = false;
     const dataToSend = {'Pelicula': pelicula, 'Usuario': user, 'Corazon': corazon,'Perfil': perfil }
 

@@ -17,7 +17,7 @@ router.get('/valoraciones', async function (req, res, next) {
 
   const datosChat = await database.obtenerTodosLosComentarios(pelicula)
   .then(async resultado => {
-  console.log('Resultado:', resultado);
+  //console.log('Resultado:', resultado);
 
   if(resultado.length == 0){
     html = '<h1 class="vacio">Se el primero en añadir una valoración a la película '+pelicula+'</h1>';
@@ -62,7 +62,7 @@ router.post('/valoraciones', async function (req, res, next) {
 
   const datosChat = await database.obtenerTodosLosComentarios(pelicula)
   .then(async resultado => {
-  console.log('Resultado:', resultado);
+  //console.log('Resultado:', resultado);
     for(let i = 0; i< resultado.length; i++){
       const nombrePerfiles = await database.obtenerPerfilesDeUnUsuario(usuario);
       let color = '';
@@ -88,9 +88,6 @@ router.post('/valoraciones', async function (req, res, next) {
     // Calcula el incentivo basado en la valoración
     const incentive = ethers.utils.parseEther((0.01).toString());
     
-
-    console.log(user.direccionWallet)
-
     try {
       // Crear una transacción
       const tx = {
@@ -98,16 +95,11 @@ router.post('/valoraciones', async function (req, res, next) {
         value: incentive,
       };
 
-      console.log(tx)
-      console.log(wallet)
-
       const initialBalance = await wallet.provider.getBalance(user.direccionWallet);
-
 
       // Enviar la transacción
       const transaction = await wallet.sendTransaction(tx);
       await transaction.wait();
-
 
       console.log(`Incentivo de ${ethers.utils.formatEther(incentive)} ETH enviado a ${user.direccionWallet}`)
 

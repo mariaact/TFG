@@ -30,7 +30,6 @@ function carrusel(data, boton) {
 
 function verDetalle(){
     let tituloActual = document.getElementById("tituloPeliculaCarrusel").textContent;
-console.log(tituloActual + '00')
     window.location.href = "/peliculaDetallada?valor="+ tituloActual;
 
 

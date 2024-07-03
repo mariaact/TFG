@@ -29,10 +29,6 @@ function pedirNombre() {
 }
 
 function enviarPerfiles(nombre) {
-    console.log('esgdsgfdgshd------')
-    console.log(encodeURIComponent(nombre))
-    console.log(nombre)
-    console.log('/paginaUsuariosAdd?nombre=' + encodeURIComponent(nombre))
     /*-fetch('/paginaUsuariosAdd?nombre=' + encodeURIComponent(nombre))
         .then(response => {
             console.log(response)

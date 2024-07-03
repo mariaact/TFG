@@ -12,7 +12,6 @@ router.get('/principal', async function (req, res, next) {
   const usuarioCuenta = req.session.user;
   let lista = '';
 
-  console.log('usuario   ' + perfilCuenta + usuarioCuenta)
 
   req.session.perfiles = perfilCuenta;
   req.session.usuario = usuarioCuenta;
@@ -46,12 +45,10 @@ router.get('/principal', async function (req, res, next) {
     const infoPeliculastop10 = JSON.stringify(peliculastop10);
 
 
-
     if(perfilCuenta != 'Kids'){
       lista = await database.listaPeliculasUsuario(usuarioCuenta, perfilCuenta);
       if(lista.length != 0){
         peliculasQueQuizasTeGusten = await recomendacionesUser.principal(usuarioCuenta, perfilCuenta);
-        console.log('-------*****************/////////////' +usuarioCuenta + perfilCuenta + peliculasQueQuizasTeGusten[0])
         infoPeliculasQueQuizasTeGusten = JSON.stringify(peliculasQueQuizasTeGusten);
       }
     }
@@ -96,9 +93,7 @@ router.get('/principal', async function (req, res, next) {
       }
       for (let i = 0; i < 4; i++) {
 
-        console.log(peliculas.length + '   ****   ' + peliculasComedia.length)
         if(lista.length != 0){
-          console.log(peliculasQueQuizasTeGusten)
           html0 += '<div class="box-0"><div class="content"><img class="imagenPelicula" id="img0-'+idCont+'" src="https://image.tmdb.org/t/p/original' + peliculasQueQuizasTeGusten[i].imagen + ' " alt=""> ' +
           '<h3 id="h30-'+idCont+'">' + peliculasQueQuizasTeGusten[i].titulo + '</h3> <a id="enlacePelicula0-'+idCont+'" href="/peliculaDetallada?valor=' + peliculasQueQuizasTeGusten[i].titulo + '"> ver mas </a>  </div>   </div>  '  
         }
@@ -122,10 +117,8 @@ router.get('/principal', async function (req, res, next) {
     }
 
     idCont = 1;
-    console.log(peliculastop10)
     for (let i = 0; i < 5; i++) {
 
-     console.log(idCont + '       ¡¡¡¡¡¡¡¡¡   ' + i)
       if(peliculastop10.length !== 0){
         html10 += '<div class="box-10"><div class="content"><img class="imagenPelicula" id="img10-'+idCont+'" src="https://image.tmdb.org/t/p/original' + peliculastop10[i].imagen + ' " alt=""> ' +
         '<h3 id="h310-'+idCont+'">' + peliculastop10[i].titulo + '</h3> <a id="enlacePelicula10-'+idCont+'" href="/peliculaDetallada?valor=' + peliculastop10[i].titulo + '"> ver mas </a>  </div>   </div>  '  
