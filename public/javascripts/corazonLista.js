@@ -8,7 +8,7 @@ function toggleHeart(button, pelicula, user, perfil) {
   if (heartIcon.classList.contains('active')) {
     corazon = true;
     const dataToSend = { 'Pelicula': pelicula, 'Usuario': user, 'Corazon': corazon, 'Perfil': perfil}
-  fetch('http://localhost:3000/enviar-datos', {
+  fetch('http://localhost:10000/enviar-datos', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -32,7 +32,7 @@ function toggleHeart(button, pelicula, user, perfil) {
     corazon = false;
     const dataToSend = {'Pelicula': pelicula, 'Usuario': user, 'Corazon': corazon,'Perfil': perfil }
 
-  fetch('http://localhost:3000/enviar-datos', {
+  fetch('http://localhost:10000/enviar-datos', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
