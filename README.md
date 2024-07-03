@@ -21,7 +21,7 @@ v18.14.0
 
 ### Instalación y configuración de Ganache
 Diríjase a la web oficial de descarga de Ganache y descargue e instale el ejecutable de instalación de Ganache: [https://archive.trufflesuite.com/ganache/].
-Para poder trabajar con Gnache debes crearte un nuevo espacio de trabajo.
+Para poder trabajar con Ganache debes crearte un nuevo espacio de trabajo.
 
 Dentro del nuevo espacio de trabajo, se debe obtener la clave privada de una de las carteras que se muestran por pantalla, mediante el símbolo de la llave. 
 ![plot](public/images/ganache.png)
